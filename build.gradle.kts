@@ -140,7 +140,7 @@ publishing {
   publications {
     val publication = create<MavenPublication>("mavenJava") {
       groupId = project.group.toString()
-      artifactId = "agone4j"
+      artifactId = "agones4j"
       version = project.version.toString()
 
       from(components["java"])

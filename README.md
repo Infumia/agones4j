@@ -6,7 +6,7 @@
 ## How to Use (Developers)
 ### Code
 ```java
-final class Test {
+final class Server {
 
   public static void main(
     final String[] args

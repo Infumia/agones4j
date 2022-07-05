@@ -94,7 +94,9 @@ repositories {
 dependencies {
   compileOnly(libs.lombok)
   compileOnly(libs.annotations)
-  compileOnly(libs.grpc)
+  compileOnly(libs.grpc.protobuf)
+  compileOnly(libs.grpc.stub)
+  compileOnly(libs.annotationsapi)
 
   annotationProcessor(libs.lombok)
   annotationProcessor(libs.annotations)

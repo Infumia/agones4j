@@ -11,7 +11,6 @@ plugins {
   signing
   alias(libs.plugins.protobuf)
   alias(libs.plugins.spotless)
-  alias(libs.plugins.shadow)
   alias(libs.plugins.nexus)
 }
 

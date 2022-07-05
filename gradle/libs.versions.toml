@@ -11,6 +11,5 @@ terminable = { module = "tr.com.infumia:terminable", version = "0.1.1" }
 
 [plugins]
 spotless = { id = "com.diffplug.spotless", version = "6.8.0" }
-shadow = { id = "com.github.johnrengelman.shadow", version = "7.1.2" }
 protobuf = { id = "com.google.protobuf", version = "0.8.19" }
 nexus = { id = "io.github.gradle-nexus.publish-plugin", version = "1.1.0" }

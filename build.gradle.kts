@@ -60,7 +60,9 @@ tasks {
   javadoc {
     options.encoding = Charsets.UTF_8.name()
     (options as StandardJavadocDocletOptions).tags("todo")
-    exclude("**/proto/**")
+    exclude("allocation/**")
+    exclude("agones/**")
+    exclude("com/google/api/**")
   }
 
   val javadocJar by creating(Jar::class) {
@@ -110,6 +112,7 @@ spotless {
   isEnforceCheck = false
 
   java {
+    target("**/tr/com/infumia/agones4j/**")
     importOrder()
     removeUnusedImports()
     endWithNewline()

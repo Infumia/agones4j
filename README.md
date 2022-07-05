@@ -11,28 +11,15 @@ final class Test {
   public static void main(
     final String[] args
   ) {
-    final var sdk = new AgonesSdk();
-    
+    final var sdk = new tr.com.infumia.agones4j.AgonesSdk();
   }
 }
 ```
-### Maven
-```xml
-<dependencies>
-  <dependency>
-    <groupId>tr.com.infumia</groupId>
-    <artifactId>agones4j</artifactId>
-    <version>VERSION</version>
-  </dependency>
-</dependencies>
-```
-### Gradle
 ```groovy
-plugins {
-  id "java"
-}
-
 dependencies {
+  implementation "io.grpc:grpc-stub:1.47.0"
+  implementation "io.grpc:grpc-protobuf:1.47.0"
+  implementation "tr.com.infumia:terminable:0.1.1"
   implementation "tr.com.infumia:agones4j:VERSION"
 }
 ```

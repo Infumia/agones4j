@@ -6,6 +6,7 @@ import com.google.protobuf.gradle.protobuf
 
 plugins {
   java
+  `java-library`
   `maven-publish`
   signing
   alias(libs.plugins.protobuf)
@@ -78,7 +79,7 @@ tasks {
   }
 
   processResources {
-    exclude("**/*.proto")
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
   }
 
   build {
@@ -94,11 +95,13 @@ repositories {
 }
 
 dependencies {
+  compileOnlyApi(libs.terminable)
+  compileOnlyApi(libs.grpc.protobuf)
+  compileOnlyApi(libs.grpc.stub)
+  compileOnlyApi(libs.annotationsapi)
+
   compileOnly(libs.lombok)
   compileOnly(libs.annotations)
-  compileOnly(libs.grpc.protobuf)
-  compileOnly(libs.grpc.stub)
-  compileOnly(libs.annotationsapi)
 
   annotationProcessor(libs.lombok)
   annotationProcessor(libs.annotations)

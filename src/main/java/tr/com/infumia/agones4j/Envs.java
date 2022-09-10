@@ -8,7 +8,7 @@ import org.jetbrains.annotations.Nullable;
 /**
  * an interface that contains utility methods for environment variables.
  */
-public interface Envs {
+interface Envs {
   /**
    * gets the variable.
    *

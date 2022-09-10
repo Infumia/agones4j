@@ -3,7 +3,7 @@ package tr.com.infumia.agones4j;
 /**
  * an interface that contains environment variables.
  */
-public interface Vars {
+interface Vars {
   /**
    * the agones sdk grpc port.
    */

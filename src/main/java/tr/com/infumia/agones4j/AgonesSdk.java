@@ -86,7 +86,7 @@ public final class AgonesSdk implements Terminable {
    * ctor.
    */
   public AgonesSdk() {
-    this("localhost", Vars.AGONES_SDK_GRPC_PORT);
+    this(Vars.AGONES_SDK_GRPC_PORT);
   }
 
   /**

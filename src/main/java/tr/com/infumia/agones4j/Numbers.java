@@ -6,7 +6,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * an interface that contains utility methods for numbers.
  */
-public interface Numbers {
+interface Numbers {
   /**
    * parses the text into {@code double}.
    *

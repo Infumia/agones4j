@@ -3,7 +3,7 @@ grpc = "1.51.0"
 
 [libraries]
 lombok = { module = "org.projectlombok:lombok", version = "1.18.24" }
-annotations = { module = "org.jetbrains:annotations", version = "23.0.0" }
+annotations = { module = "org.jetbrains:annotations", version = "23.1.0" }
 grpc-stub = { module = "io.grpc:grpc-stub", version.ref = "grpc" }
 grpc-protobuf = { module = "io.grpc:grpc-protobuf", version.ref = "grpc" }
 annotationsapi = { module = "org.apache.tomcat:annotations-api", version = "6.0.53" }

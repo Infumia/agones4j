@@ -1,8 +1,5 @@
 import com.diffplug.spotless.LineEnding
-import com.google.protobuf.gradle.generateProtoTasks
 import com.google.protobuf.gradle.id
-import com.google.protobuf.gradle.plugins
-import com.google.protobuf.gradle.protobuf
 
 plugins {
   java
@@ -74,6 +71,7 @@ tasks {
   val sourcesJar by creating(Jar::class) {
     dependsOn("classes")
     archiveClassifier.set("sources")
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
     from(sourceSets["main"].allSource)
   }
 

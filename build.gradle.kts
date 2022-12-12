@@ -1,8 +1,5 @@
 import com.diffplug.spotless.LineEnding
-import com.google.protobuf.gradle.generateProtoTasks
 import com.google.protobuf.gradle.id
-import com.google.protobuf.gradle.plugins
-import com.google.protobuf.gradle.protobuf
 
 plugins {
   java

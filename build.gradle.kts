@@ -71,6 +71,7 @@ tasks {
   val sourcesJar by creating(Jar::class) {
     dependsOn("classes")
     archiveClassifier.set("sources")
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
     from(sourceSets["main"].allSource)
   }
 

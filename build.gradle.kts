@@ -113,7 +113,7 @@ spotless {
   isEnforceCheck = false
 
   java {
-    target("**/tr/com/infumia/agones4j/**")
+    target("**/src/main/java/tr/com/infumia/agones4j/**")
     importOrder()
     removeUnusedImports()
     endWithNewline()

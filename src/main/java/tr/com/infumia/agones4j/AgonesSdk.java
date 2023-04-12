@@ -50,18 +50,28 @@ public final class AgonesSdk implements Terminable {
   /**
    * ctor.
    *
+   * @param channel the channel.
+   */
+  public AgonesSdk(@NotNull final ManagedChannel channel) {
+    this.channel = channel;
+    this.stub = SDKGrpc.newStub(this.channel);
+    this.alpha = new AgonesAlphaSdk(this.channel);
+    this.beta = new AgonesBetaSdk(this.channel);
+  }
+
+  /**
+   * ctor.
+   *
    * @param grpcHost the grpc host.
    * @param grpcPort the grpc port.
    */
   public AgonesSdk(@NotNull final String grpcHost, final int grpcPort) {
-    this.channel =
+    this(
       ManagedChannelBuilder
         .forAddress(grpcHost, grpcPort)
         .usePlaintext()
-        .build();
-    this.stub = SDKGrpc.newStub(this.channel);
-    this.alpha = new AgonesAlphaSdk(this.channel);
-    this.beta = new AgonesBetaSdk(this.channel);
+        .build()
+    );
   }
 
   /**

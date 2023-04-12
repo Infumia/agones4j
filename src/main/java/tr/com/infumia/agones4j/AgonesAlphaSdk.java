@@ -3,6 +3,7 @@ package tr.com.infumia.agones4j;
 import agones.dev.sdk.Sdk;
 import agones.dev.sdk.alpha.Alpha;
 import agones.dev.sdk.alpha.SDKGrpc;
+import com.google.protobuf.FieldMask;
 import io.grpc.ManagedChannel;
 import io.grpc.stub.StreamObserver;
 import lombok.AccessLevel;
@@ -31,6 +32,29 @@ public final class AgonesAlphaSdk {
   }
 
   /**
+   * adds a value to a list and returns updated list. returns NOT_FOUND if the list does not exist. returns
+   * ALREADY_EXISTS if the value is already in the list. returns OUT_OF_RANGE if the list is already at Capacity.
+   *
+   * @param name the name to add.
+   * @param value the value to add.
+   * @param observer the observer to add.
+   */
+  public void addList(
+    @NotNull final String name,
+    @NotNull final String value,
+    @NotNull final StreamObserver<Alpha.List> observer
+  ) {
+    this.stub.addListValue(
+        Alpha.AddListValueRequest
+          .newBuilder()
+          .setName(name)
+          .setValue(value)
+          .build(),
+        observer
+      );
+  }
+
+  /**
    * returns the list of the currently connected player ids.
    * this is always accurate from what has been set through this SDK, even if the value has yet to be updated on the
    * {@link Sdk.GameServer} status resource.
@@ -44,6 +68,38 @@ public final class AgonesAlphaSdk {
     @NotNull final StreamObserver<Alpha.PlayerIDList> observer
   ) {
     this.stub.getConnectedPlayers(Alpha.Empty.getDefaultInstance(), observer);
+  }
+
+  /**
+   * gets a counter. returns NOT_FOUND if the counter does not exist.
+   *
+   * @param name the name of the counter.
+   * @param observer the observer to get counter.
+   */
+  public void getCounter(
+    @NotNull final String name,
+    @NotNull final StreamObserver<Alpha.Counter> observer
+  ) {
+    this.stub.getCounter(
+        Alpha.GetCounterRequest.newBuilder().setName(name).build(),
+        observer
+      );
+  }
+
+  /**
+   * gets a list. returns NOT_FOUND if the List does not exist.
+   *
+   * @param name the name to get.
+   * @param observer the observer to get.
+   */
+  public void getList(
+    @NotNull final String name,
+    @NotNull final StreamObserver<Alpha.List> observer
+  ) {
+    this.stub.getList(
+        Alpha.GetListRequest.newBuilder().setName(name).build(),
+        observer
+      );
   }
 
   /**
@@ -226,6 +282,29 @@ public final class AgonesAlphaSdk {
   }
 
   /**
+   * removes a value from a list and returns updated list. returns NOT_FOUND if the list does not exist. returns
+   * NOT_FOUND if the value is not in the list.
+   *
+   * @param name the name to remove.
+   * @param value the value to remove.
+   * @param observer the observer to add.
+   */
+  public void removeList(
+    @NotNull final String name,
+    @NotNull final String value,
+    @NotNull final StreamObserver<Alpha.List> observer
+  ) {
+    this.stub.removeListValue(
+        Alpha.RemoveListValueRequest
+          .newBuilder()
+          .setName(name)
+          .setValue(value)
+          .build(),
+        observer
+      );
+  }
+
+  /**
    * update the {@link Sdk.GameServer.Status.PlayerStatus#getCapacity()} value with a new capacity.
    *
    * @param capacity the capacity to update.
@@ -236,5 +315,55 @@ public final class AgonesAlphaSdk {
     @NotNull final StreamObserver<Alpha.Empty> observer
   ) {
     this.stub.setPlayerCapacity(capacity, observer);
+  }
+
+  /**
+   * returns the updated counter. returns NOT_FOUND if the counter does not exist (name cannot be updated). returns
+   * OUT_OF_RANGE if the count is out of range [0,Capacity]. returns INVALID_ARGUMENT if the field mask path(s) are not
+   * field(s) of the counter. if a field mask path(s) is specified, but the value is not set in the request counter
+   * object, then the default value for the variable will be set (i.e. 0 for "capacity" or "count").
+   *
+   * @param counter the counter to update.
+   * @param updateMask the update mask to update.
+   * @param observer the observer to update.
+   */
+  public void updateCounter(
+    @NotNull final Alpha.Counter counter,
+    @NotNull final FieldMask updateMask,
+    @NotNull final StreamObserver<Alpha.Counter> observer
+  ) {
+    this.stub.updateCounter(
+        Alpha.UpdateCounterRequest
+          .newBuilder()
+          .setCounter(counter)
+          .setUpdateMask(updateMask)
+          .build(),
+        observer
+      );
+  }
+
+  /**
+   * returns the updated list. returns NOT_FOUND if the list does not exist (name cannot be updated).
+   * <p>
+   * **THIS WILL OVERWRITE ALL EXISTING LIST.VALUES WITH ANY REQUEST LIST.VALUES**
+   * <p>
+   * use addListValue() or removeListValue() for modifying the List.Values field.
+   * returns INVALID_ARGUMENT if the field mask path(s) are not field(s) of the list.
+   *
+   * @param observer the observer to update.
+   */
+  public void updateList(
+    @NotNull final Alpha.List list,
+    @NotNull final FieldMask updateMask,
+    @NotNull final StreamObserver<Alpha.List> observer
+  ) {
+    this.stub.updateList(
+        Alpha.UpdateListRequest
+          .newBuilder()
+          .setList(list)
+          .setUpdateMask(updateMask)
+          .build(),
+        observer
+      );
   }
 }

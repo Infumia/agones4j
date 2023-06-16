@@ -12,14 +12,13 @@ import lombok.Getter;
 import lombok.experimental.Accessors;
 import lombok.experimental.FieldDefaults;
 import org.jetbrains.annotations.NotNull;
-import tr.com.infumia.terminable.Terminable;
 
 /**
  * a class that represents Agones Sdk.
  */
 @Accessors(fluent = true)
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public final class AgonesSdk implements Terminable {
+public final class AgonesSdk implements AutoCloseable {
 
   /**
    * the alpha.

@@ -20,7 +20,6 @@ dependencies {
   implementation "io.grpc:grpc-stub:1.47.0"
   implementation "io.grpc:grpc-protobuf:1.47.0"
   implementation "io.grpc:grpc-netty:1.47.0"
-  implementation "tr.com.infumia:terminable:0.1.1"
   implementation "tr.com.infumia:agones4j:VERSION"
 }
 ```

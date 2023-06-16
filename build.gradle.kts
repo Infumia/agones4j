@@ -92,7 +92,6 @@ repositories {
 }
 
 dependencies {
-  compileOnlyApi(libs.terminable)
   compileOnlyApi(libs.protobuf)
   compileOnlyApi(libs.grpc.protobuf)
   compileOnlyApi(libs.grpc.stub)

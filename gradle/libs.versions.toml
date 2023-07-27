@@ -1,5 +1,5 @@
 [versions]
-grpc = "1.56.1"
+grpc = "1.57.0"
 
 [libraries]
 lombok = { module = "org.projectlombok:lombok", version = "1.18.28" }

@@ -2,7 +2,7 @@
 grpc = "1.58.0"
 
 [libraries]
-lombok = { module = "org.projectlombok:lombok", version = "1.18.28" }
+lombok = { module = "org.projectlombok:lombok", version = "1.18.30" }
 annotations = { module = "org.jetbrains:annotations", version = "24.0.1" }
 protobuf = { module = "com.google.protobuf:protobuf-java", version = "3.24.3" }
 grpc-stub = { module = "io.grpc:grpc-stub", version.ref = "grpc" }

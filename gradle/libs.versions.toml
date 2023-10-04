@@ -4,7 +4,7 @@ grpc = "1.58.0"
 [libraries]
 lombok = { module = "org.projectlombok:lombok", version = "1.18.30" }
 annotations = { module = "org.jetbrains:annotations", version = "24.0.1" }
-protobuf = { module = "com.google.protobuf:protobuf-java", version = "3.24.3" }
+protobuf = { module = "com.google.protobuf:protobuf-java", version = "3.24.4" }
 grpc-stub = { module = "io.grpc:grpc-stub", version.ref = "grpc" }
 grpc-protobuf = { module = "io.grpc:grpc-protobuf", version.ref = "grpc" }
 annotationsapi = { module = "org.apache.tomcat:annotations-api", version = "6.0.53" }

@@ -97,6 +97,7 @@ spotless {
   lineEndings = LineEnding.UNIX
 
   java {
+    target("**/src/main/java/tr/com/infumia/agones4j/**")
     importOrder()
     removeUnusedImports()
     endWithNewline()

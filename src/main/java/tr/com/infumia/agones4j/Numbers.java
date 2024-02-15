@@ -1,68 +1,36 @@
 package tr.com.infumia.agones4j;
 
+import java.util.Objects;
 import java.util.Optional;
-import org.jetbrains.annotations.NotNull;
 
 /**
- * an interface that contains utility methods for numbers.
+ * A utility class for parsing primitive numbers from strings.
  */
-interface Numbers {
+final class Numbers {
+
   /**
-   * parses the text into {@code double}.
-   *
-   * @param text the text to parse.
-   *
-   * @return parsed double.
+   * Ctor.
    */
-  @NotNull
-  static Optional<Double> parseDouble(@NotNull final String text) {
-    try {
-      return Optional.of(Double.parseDouble(text));
-    } catch (final Exception ignored) {}
-    return Optional.empty();
+  private Numbers() {
+    throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
   }
 
   /**
-   * parses the text into {@code float}.
+   * Parses the given text into an integer value.
    *
    * @param text the text to parse.
    *
-   * @return parsed float.
-   */
-  @NotNull
-  static Optional<Float> parseFloat(@NotNull final String text) {
-    try {
-      return Optional.of(Float.parseFloat(text));
-    } catch (final Exception ignored) {}
-    return Optional.empty();
-  }
-
-  /**
-   * parses the text into {@code int}.
+   * @return an {@code Optional} containing the parsed integer value if the text can be parsed, or an empty
+   *   {@code Optional} if the text cannot be parsed.
    *
-   * @param text the text to parse.
-   *
-   * @return parsed int.
+   * @see Integer#parseInt(String)
+   * @see Optional#of(Object)
+   * @see Optional#empty()
    */
-  @NotNull
-  static Optional<Integer> parseInt(@NotNull final String text) {
+  static Optional<Integer> parseInt(final String text) {
+    Objects.requireNonNull(text, "text");
     try {
       return Optional.of(Integer.parseInt(text));
-    } catch (final Exception ignored) {}
-    return Optional.empty();
-  }
-
-  /**
-   * parses the text into {@code long}.
-   *
-   * @param text the text to parse.
-   *
-   * @return parsed long.
-   */
-  @NotNull
-  static Optional<Long> parseLong(@NotNull final String text) {
-    try {
-      return Optional.of(Long.parseLong(text));
     } catch (final Exception ignored) {}
     return Optional.empty();
   }

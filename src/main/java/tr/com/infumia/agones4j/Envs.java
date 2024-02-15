@@ -1,149 +1,75 @@
 package tr.com.infumia.agones4j;
 
+import java.util.Objects;
 import java.util.Optional;
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 /**
- * an interface that contains utility methods for environment variables.
+ * A utility class for retrieving environment variables.
  */
-interface Envs {
+final class Envs {
+
   /**
-   * gets the variable.
-   *
-   * @param key the key to get.
-   *
-   * @return environment variable.
+   * Ctor.
    */
-  @Nullable
-  static String get(@NotNull final String key) {
-    return System.getenv(key);
+  private Envs() {
+    throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
   }
 
   /**
-   * gets the variable.
+   * Retrieves the value of the specified environment variable.
    *
-   * @param key the key to get.
-   * @param def the default to get.
+   * @param key the name of the environment variable
+   * @param def the default value to return if the environment variable is not found
    *
-   * @return environment variable.
+   * @return the value of the environment variable, or the default value if the variable is not found
+   *
+   * @throws NullPointerException if the key is null
    */
-  @Nullable
-  @Contract("_, !null -> !null")
-  static String get(@NotNull final String key, @Nullable final String def) {
+  static String get(final String key, final String def) {
+    Objects.requireNonNull(key, "key");
     return Envs.getOptional(key).orElse(def);
   }
 
   /**
-   * gets the variable as double.
+   * Retrieves the value of the specified environment variable and converts it to an integer.
    *
-   * @param key the key to get.
-   * @param def the default to get.
+   * @param key the name of the environment variable
+   * @param def the default value to return if the environment variable is not found
    *
-   * @return environment variable as double.
+   * @return the value of the environment variable, or the default value if the variable is not found
+   *
+   * @throws NullPointerException if the key is null
    */
-  static double getDouble(@NotNull final String key, final double def) {
-    return Envs.getOptional(key).flatMap(Numbers::parseDouble).orElse(def);
-  }
-
-  /**
-   * gets the variable as float.
-   *
-   * @param key the key to get.
-   * @param def the default to get.
-   *
-   * @return environment variable as float.
-   */
-  static float getFloat(@NotNull final String key, final float def) {
-    return Envs.getOptional(key).flatMap(Numbers::parseFloat).orElse(def);
-  }
-
-  /**
-   * gets the variable as int.
-   *
-   * @param key the key to get.
-   * @param def the default to get.
-   *
-   * @return environment variable as int.
-   */
-  static int getInt(@NotNull final String key, final int def) {
+  static int getInt(final String key, final int def) {
+    Objects.requireNonNull(key, "key");
     return Envs.getOptional(key).flatMap(Numbers::parseInt).orElse(def);
   }
 
   /**
-   * gets the variable as long.
+   * Retrieves the value of the specified environment variable.
    *
-   * @param key the key to get.
-   * @param def the default to get.
+   * @param key the name of the environment variable
    *
-   * @return environment variable as long.
+   * @return the value of the environment variable, or null if the variable is not found
+   *
+   * @throws NullPointerException if the key is null
    */
-  static long getLong(@NotNull final String key, final long def) {
-    return Envs.getOptional(key).flatMap(Numbers::parseLong).orElse(def);
-  }
-
-  /**
-   * gets the variable.
-   *
-   * @param key the key to get.
-   *
-   * @return environment variable.
-   */
-  @NotNull
-  static Optional<String> getOptional(@NotNull final String key) {
+  private static Optional<String> getOptional(final String key) {
+    Objects.requireNonNull(key, "key");
     return Optional.ofNullable(Envs.get(key));
   }
 
   /**
-   * gets the env. or throw.
+   * Retrieves the value of the specified environment variable.
    *
-   * @param key the key to get.
+   * @param key the name of the environment variable
    *
-   * @return environment variable.
+   * @return the value of the environment variable, or null if the variable is not found
+   *
+   * @throws NullPointerException if the key is null
    */
-  @NotNull
-  static String getOrThrow(@NotNull final String key) {
-    return Exceptions.checkNotNull(
-      Envs.get(key),
-      "Env. called '%s' not found!",
-      key
-    );
-  }
-
-  /**
-   * gets the variable as string array.
-   *
-   * @param key the key to get.
-   * @param def the default to get.
-   * @param regex the regex to get.
-   *
-   * @return environment variable as string array.
-   */
-  @Nullable
-  @Contract("_, !null, _ -> !null")
-  static String[] getStringArray(
-    @NotNull final String key,
-    @Nullable final String[] def,
-    @NotNull final String regex
-  ) {
-    return Envs.getOptional(key).map(s -> s.split(regex)).orElse(def);
-  }
-
-  /**
-   * gets the variable as string array.
-   *
-   * @param key the key to get.
-   * @param def the default to get.
-   *
-   * @return environment variable as string array.
-   */
-  @Nullable
-  @Contract("_, !null -> !null")
-  static String[] getStringArray(
-    @NotNull final String key,
-    @Nullable final String[] def
-  ) {
-    return Envs.getStringArray(key, def, ",");
+  private static String get(final String key) {
+    Objects.requireNonNull(key, "key");
+    return System.getenv(key);
   }
 }

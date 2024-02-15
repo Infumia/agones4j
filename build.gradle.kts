@@ -70,9 +70,10 @@ tasks {
   javadoc {
     options.encoding = Charsets.UTF_8.name()
     (options as StandardJavadocDocletOptions).tags("todo")
-    exclude("allocation/**")
-    exclude("agones/**")
-    exclude("com/google/api/**")
+    exclude("**/allocation/**")
+    exclude("**/agones/**")
+    exclude("**/com/google/api/**")
+    exclude("**/grpc/**")
   }
 
   val javadocJar by creating(Jar::class) {

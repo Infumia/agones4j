@@ -15,10 +15,20 @@ val signRequired = !rootProject.property("dev").toString().toBoolean()
 
 group = "tr.com.infumia"
 
+repositories {
+  mavenCentral()
+}
+
+dependencies {
+  compileOnlyApi(libs.protobuf)
+  compileOnlyApi(libs.grpc.protobuf)
+  compileOnlyApi(libs.grpc.stub)
+  compileOnlyApi(libs.annotationsapi)
+}
+
 java {
-  toolchain {
-    languageVersion.set(JavaLanguageVersion.of(17))
-  }
+  sourceCompatibility = JavaVersion.VERSION_1_8
+  targetCompatibility = JavaVersion.VERSION_1_8
 }
 
 sourceSets {
@@ -33,11 +43,14 @@ sourceSets {
 }
 
 protobuf {
+  protoc { artifact = libs.protoc.get().toString() }
+
   plugins {
     id("grpc") {
       artifact = "io.grpc:protoc-gen-grpc-java:${libs.versions.grpc.get()}"
     }
   }
+
   generateProtoTasks {
     all().forEach {
       it.plugins {
@@ -76,40 +89,12 @@ tasks {
   }
 
   processResources {
-    duplicatesStrategy = DuplicatesStrategy.INCLUDE
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
   }
-
-  build {
-    dependsOn(spotlessApply)
-    dependsOn(jar)
-    dependsOn(sourcesJar)
-    dependsOn(javadocJar)
-  }
-}
-
-repositories {
-  mavenCentral()
-}
-
-dependencies {
-  compileOnlyApi(libs.protobuf)
-  compileOnlyApi(libs.grpc.protobuf)
-  compileOnlyApi(libs.grpc.stub)
-  compileOnlyApi(libs.annotationsapi)
-
-  compileOnly(libs.lombok)
-  compileOnly(libs.annotations)
-
-  annotationProcessor(libs.lombok)
-  annotationProcessor(libs.annotations)
-
-  testAnnotationProcessor(libs.lombok)
-  testAnnotationProcessor(libs.annotations)
 }
 
 spotless {
   lineEndings = LineEnding.UNIX
-  isEnforceCheck = false
 
   java {
     target("**/src/main/java/tr/com/infumia/agones4j/**")
@@ -120,14 +105,16 @@ spotless {
     trimTrailingWhitespace()
     prettier(
       mapOf(
-        "prettier" to "2.7.1",
-        "prettier-plugin-java" to "1.6.2"
+        "prettier" to "3.2.5",
+        "prettier-plugin-java" to "2.5.0"
       )
     ).config(
       mapOf(
         "parser" to "java",
         "tabWidth" to 2,
-        "useTabs" to false
+        "useTabs" to false,
+        "printWidth" to 120,
+        "plugins" to listOf("prettier-plugin-java"),
       )
     )
   }

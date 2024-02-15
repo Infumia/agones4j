@@ -10,6 +10,5 @@ grpc-protobuf = { module = "io.grpc:grpc-protobuf", version.ref = "grpc" }
 annotationsapi = { module = "org.apache.tomcat:annotations-api", version = "6.0.53" }
 
 [plugins]
-spotless = { id = "com.diffplug.spotless", version = "6.25.0" }
 protobuf = { id = "com.google.protobuf", version = "0.9.4" }
 nexus = { id = "io.github.gradle-nexus.publish-plugin", version = "1.3.0" }

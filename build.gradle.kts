@@ -1,4 +1,3 @@
-import com.diffplug.spotless.LineEnding
 import com.google.protobuf.gradle.id
 
 plugins {
@@ -7,7 +6,6 @@ plugins {
   `maven-publish`
   signing
   alias(libs.plugins.protobuf)
-  alias(libs.plugins.spotless)
   alias(libs.plugins.nexus)
 }
 
@@ -91,33 +89,6 @@ tasks {
 
   processResources {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-  }
-}
-
-spotless {
-  lineEndings = LineEnding.UNIX
-
-  java {
-    target("**/src/main/java/tr/com/infumia/agones4j/**")
-    importOrder()
-    removeUnusedImports()
-    endWithNewline()
-    indentWithSpaces(2)
-    trimTrailingWhitespace()
-    prettier(
-      mapOf(
-        "prettier" to "3.2.5",
-        "prettier-plugin-java" to "2.5.0"
-      )
-    ).config(
-      mapOf(
-        "parser" to "java",
-        "tabWidth" to 2,
-        "useTabs" to false,
-        "printWidth" to 120,
-        "plugins" to listOf("prettier-plugin-java"),
-      )
-    )
   }
 }
 

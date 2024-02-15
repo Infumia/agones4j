@@ -29,8 +29,6 @@ dependencies {
 java {
   sourceCompatibility = JavaVersion.VERSION_1_8
   targetCompatibility = JavaVersion.VERSION_1_8
-  withSourcesJar()
-  withJavadocJar()
 }
 
 sourceSets {
@@ -75,6 +73,19 @@ tasks {
     exclude("allocation/**")
     exclude("agones/**")
     exclude("com/google/api/**")
+  }
+
+  val javadocJar by creating(Jar::class) {
+    dependsOn("javadoc")
+    archiveClassifier.set("javadoc")
+    from(javadoc)
+  }
+
+  val sourcesJar by creating(Jar::class) {
+    dependsOn("classes")
+    archiveClassifier.set("sources")
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
+    from(sourceSets["main"].allSource)
   }
 
   processResources {

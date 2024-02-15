@@ -1,42 +1,48 @@
 package tr.com.infumia.agones4j;
 
-import agones.dev.sdk.alpha.Alpha;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.StringJoiner;
 
+/**
+ * Represents a list in the Agones system.
+ */
 public final class AgonesList {
+
   private final String name;
   private final long capacity;
   private final List<String> values;
 
-  private AgonesList(final String name, final long capacity, final List<String> values) {
+  AgonesList(final String name, final long capacity, final List<String> values) {
     this.name = name;
     this.capacity = capacity;
     this.values = Collections.unmodifiableList(values);
   }
 
-  static AgonesList fromAgones(final Alpha.List list) {
-    return new AgonesList(list.getName(), list.getCapacity(), list.getValuesList());
-  }
-
-  Alpha.List toAgones() {
-    return Alpha.List.newBuilder()
-      .setName(this.name)
-      .setCapacity(this.capacity)
-      .addAllValues(this.values)
-      .build();
-  }
-
+  /**
+   * Retrieves the name of the list.
+   *
+   * @return The name.
+   */
   public String getName() {
     return this.name;
   }
 
+  /**
+   * Retrieves the capacity of the list.
+   *
+   * @return The capacity.
+   */
   public long getCapacity() {
     return this.capacity;
   }
 
+  /**
+   * Returns the values of the list.
+   *
+   * @return the values.
+   */
   public List<String> getValues() {
     return this.values;
   }
@@ -50,9 +56,11 @@ public final class AgonesList {
       return false;
     }
     final AgonesList that = (AgonesList) obj;
-    return Objects.equals(this.capacity, that.capacity) &&
+    return (
+      Objects.equals(this.capacity, that.capacity) &&
       Objects.equals(this.name, that.name) &&
-      Objects.equals(this.values, that.values);
+      Objects.equals(this.values, that.values)
+    );
   }
 
   @Override

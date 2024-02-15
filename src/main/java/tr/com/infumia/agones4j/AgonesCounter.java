@@ -1,33 +1,46 @@
 package tr.com.infumia.agones4j;
 
-import agones.dev.sdk.alpha.Alpha;
-import java.util.Collections;
-import java.util.List;
 import java.util.Objects;
 import java.util.StringJoiner;
 
+/**
+ * Represents a counter in the Agones system.
+ */
 public final class AgonesCounter {
+
   private final String name;
   private final long capacity;
   private final long count;
 
-  private AgonesCounter(final String name, final long capacity, final long count) {
+  AgonesCounter(final String name, final long capacity, final long count) {
     this.name = name;
     this.capacity = capacity;
     this.count = count;
   }
-  static AgonesCounter fromAgones(final Alpha.Counter counter) {
-    return new AgonesCounter(counter.getName(), counter.getCapacity(), counter.getCount());
-  }
 
+  /**
+   * Retrieves the counter name.
+   *
+   * @return the name.
+   */
   public String getName() {
     return this.name;
   }
 
+  /**
+   * Retrieves the counter capacity.
+   *
+   * @return the capacity.
+   */
   public long getCapacity() {
     return this.capacity;
   }
 
+  /**
+   * Returns the counter count.
+   *
+   * @return the count.
+   */
   public long getCount() {
     return this.count;
   }
@@ -41,9 +54,11 @@ public final class AgonesCounter {
       return false;
     }
     final AgonesCounter that = (AgonesCounter) obj;
-    return Objects.equals(this.capacity, that.capacity) &&
+    return (
+      Objects.equals(this.capacity, that.capacity) &&
       Objects.equals(this.name, that.name) &&
-      Objects.equals(this.count, that.count);
+      Objects.equals(this.count, that.count)
+    );
   }
 
   @Override

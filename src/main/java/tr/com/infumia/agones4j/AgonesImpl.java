@@ -11,13 +11,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 
 final class AgonesImpl implements Agones {
@@ -57,7 +55,7 @@ final class AgonesImpl implements Agones {
     Objects.requireNonNull(this.gameServerWatcherExecutor, "Game server watcher is not enabled!");
     if (this.gameServerWatchers == null) {
       this.gameServerWatchers = Collections.synchronizedList(new ArrayList<>());
-      final StreamObserver<Sdk.GameServer> response = StreamObservers.onNext(
+      final StreamObserver<Sdk.GameServer> response = Internal.observerOnNext(
         this.gameServerWatcherExecutor,
         this.gameServerWatchers
       );
@@ -79,7 +77,7 @@ final class AgonesImpl implements Agones {
     if (this.healthCheckTask != null) {
       this.healthCheckTask.cancel(true);
     }
-    final StreamObserver<Sdk.Empty> request = this.healthCheckStream(StreamObservers.empty());
+    final StreamObserver<Sdk.Empty> request = this.healthCheckStream(Internal.observerEmpty());
     this.healthCheckTask =
       this.healthCheckExecutor.scheduleAtFixedRate(
           () -> {
@@ -144,143 +142,154 @@ final class AgonesImpl implements Agones {
   @Override
   public void getConnectedPlayersFuture(final StreamObserver<List<String>> response) {
     this.alpha.getConnectedPlayers(
-      Alpha.Empty.getDefaultInstance(),
-      StreamObservers.map(response, Alpha.PlayerIDList::getListList)
-    );
+        Alpha.Empty.getDefaultInstance(),
+        Internal.observerMap(response, Alpha.PlayerIDList::getListList)
+      );
   }
 
   @Override
   public void playerConnect(final String playerId, final StreamObserver<Boolean> response) {
     this.alpha.playerConnect(
-      Alpha.PlayerID.newBuilder().setPlayerID(playerId).build(),
-      StreamObservers.map(response, Alpha.Bool::getBool)
-    );
+        Alpha.PlayerID.newBuilder().setPlayerID(playerId).build(),
+        Internal.observerMap(response, Alpha.Bool::getBool)
+      );
   }
 
   @Override
   public void playerDisconnect(final String playerId, final StreamObserver<Boolean> response) {
     this.alpha.playerDisconnect(
-      Alpha.PlayerID.newBuilder().setPlayerID(playerId).build(),
-      StreamObservers.map(response, Alpha.Bool::getBool)
-    );
+        Alpha.PlayerID.newBuilder().setPlayerID(playerId).build(),
+        Internal.observerMap(response, Alpha.Bool::getBool)
+      );
   }
 
   @Override
   public void isPlayerConnected(final String playerId, final StreamObserver<Boolean> response) {
     this.alpha.isPlayerConnected(
-      Alpha.PlayerID.newBuilder().setPlayerID(playerId).build(),
-      StreamObservers.map(response, Alpha.Bool::getBool)
-    );
+        Alpha.PlayerID.newBuilder().setPlayerID(playerId).build(),
+        Internal.observerMap(response, Alpha.Bool::getBool)
+      );
   }
 
   @Override
   public void setPlayerCapacity(final long capacity, final StreamObserver<Alpha.Empty> response) {
-    this.alpha.setPlayerCapacity(
-      Alpha.Count.newBuilder().setCount(capacity).build(),
-      StreamObservers.emptyAlpha()
-    );
+    this.alpha.setPlayerCapacity(Alpha.Count.newBuilder().setCount(capacity).build(), Internal.observerEmptyAlpha());
   }
 
   @Override
   public void getPlayerCapacity(final StreamObserver<Long> response) {
-    this.alpha.getPlayerCapacity(Alpha.Empty.getDefaultInstance(), StreamObservers.map(response, Alpha.Count::getCount));
+    this.alpha.getPlayerCapacity(
+        Alpha.Empty.getDefaultInstance(),
+        Internal.observerMap(response, Alpha.Count::getCount)
+      );
   }
 
   @Override
   public void getPlayerCount(final StreamObserver<Long> response) {
-    this.alpha.getPlayerCount(Alpha.Empty.getDefaultInstance(), StreamObservers.map(response, Alpha.Count::getCount));
+    this.alpha.getPlayerCount(Alpha.Empty.getDefaultInstance(), Internal.observerMap(response, Alpha.Count::getCount));
   }
 
   @Override
   public void getList(final String name, final StreamObserver<AgonesList> response) {
-    final Alpha.GetListRequest request = Alpha.GetListRequest.newBuilder()
-      .setName(name)
-      .build();
-    this.alpha.getList(request, StreamObservers.map(response, AgonesList::fromAgones));
+    final Alpha.GetListRequest request = Alpha.GetListRequest.newBuilder().setName(name).build();
+    this.alpha.getList(request, Internal.observerMap(response, Internal::toList));
   }
 
   @Override
   public void addList(final String name, final String value, final StreamObserver<AgonesList> response) {
-    final Alpha.AddListValueRequest request = Alpha.AddListValueRequest.newBuilder()
+    final Alpha.AddListValueRequest request = Alpha.AddListValueRequest
+      .newBuilder()
       .setName(name)
       .setValue(value)
       .build();
-    this.alpha.addListValue(request, StreamObservers.map(response, AgonesList::fromAgones));
+    this.alpha.addListValue(request, Internal.observerMap(response, Internal::toList));
   }
 
   @Override
   public void removeList(final String name, final String value, final StreamObserver<AgonesList> response) {
-    final Alpha.RemoveListValueRequest request = Alpha.RemoveListValueRequest.newBuilder()
+    final Alpha.RemoveListValueRequest request = Alpha.RemoveListValueRequest
+      .newBuilder()
       .setName(name)
       .setValue(value)
       .build();
-    this.alpha.removeListValue(request, StreamObservers.map(response, AgonesList::fromAgones));
+    this.alpha.removeListValue(request, Internal.observerMap(response, Internal::toList));
   }
 
   @Override
-  public void updateList(final AgonesList list, final List<String> updateMask, final StreamObserver<AgonesList> response) {
+  public void updateList(
+    final AgonesList list,
+    final List<String> updateMask,
+    final StreamObserver<AgonesList> response
+  ) {
     final FieldMask mask = FieldMask.newBuilder().addAllPaths(updateMask).build();
-    final Alpha.UpdateListRequest request = Alpha.UpdateListRequest.newBuilder()
-      .setList(list.toAgones())
+    final Alpha.UpdateListRequest request = Alpha.UpdateListRequest
+      .newBuilder()
+      .setList(Internal.toAgonesList(list))
       .setUpdateMask(mask)
       .build();
-    this.alpha.updateList(request, StreamObservers.map(response, AgonesList::fromAgones));
+    this.alpha.updateList(request, Internal.observerMap(response, Internal::toList));
   }
 
   @Override
   public void getCounter(final String name, final StreamObserver<AgonesCounter> response) {
-    final Alpha.GetCounterRequest request = Alpha.GetCounterRequest.newBuilder()
-      .setName(name)
-      .build();
-    this.alpha.getCounter(request, StreamObservers.map(response, AgonesCounter::fromAgones));
+    final Alpha.GetCounterRequest request = Alpha.GetCounterRequest.newBuilder().setName(name).build();
+    this.alpha.getCounter(request, Internal.observerMap(response, Internal::toCounter));
   }
 
   @Override
   public void increaseCounter(final String name, final long amount, final StreamObserver<AgonesCounter> response) {
-    final Alpha.CounterUpdateRequest update = Alpha.CounterUpdateRequest.newBuilder()
+    final Alpha.CounterUpdateRequest update = Alpha.CounterUpdateRequest
+      .newBuilder()
       .setName(name)
       .setCountDiff(amount >= 0 ? amount : Math.abs(amount))
       .build();
-    final Alpha.UpdateCounterRequest request = Alpha.UpdateCounterRequest.newBuilder()
+    final Alpha.UpdateCounterRequest request = Alpha.UpdateCounterRequest
+      .newBuilder()
       .setCounterUpdateRequest(update)
       .build();
-    this.alpha.updateCounter(request, StreamObservers.map(response, AgonesCounter::fromAgones));
+    this.alpha.updateCounter(request, Internal.observerMap(response, Internal::toCounter));
   }
 
   @Override
   public void decreaseCounter(final String name, final long amount, final StreamObserver<AgonesCounter> response) {
-    final Alpha.CounterUpdateRequest update = Alpha.CounterUpdateRequest.newBuilder()
+    final Alpha.CounterUpdateRequest update = Alpha.CounterUpdateRequest
+      .newBuilder()
       .setName(name)
       .setCountDiff(amount >= 0 ? -amount : amount)
       .build();
-    final Alpha.UpdateCounterRequest request = Alpha.UpdateCounterRequest.newBuilder()
+    final Alpha.UpdateCounterRequest request = Alpha.UpdateCounterRequest
+      .newBuilder()
       .setCounterUpdateRequest(update)
       .build();
-    this.alpha.updateCounter(request, StreamObservers.map(response, AgonesCounter::fromAgones));
+    this.alpha.updateCounter(request, Internal.observerMap(response, Internal::toCounter));
   }
 
   @Override
   public void setCounterCount(final String name, final long amount, final StreamObserver<AgonesCounter> response) {
-    final Alpha.CounterUpdateRequest update = Alpha.CounterUpdateRequest.newBuilder()
+    final Alpha.CounterUpdateRequest update = Alpha.CounterUpdateRequest
+      .newBuilder()
       .setName(name)
       .setCount(Int64Value.newBuilder().setValue(amount).build())
       .build();
-    final Alpha.UpdateCounterRequest request = Alpha.UpdateCounterRequest.newBuilder()
+    final Alpha.UpdateCounterRequest request = Alpha.UpdateCounterRequest
+      .newBuilder()
       .setCounterUpdateRequest(update)
       .build();
-    this.alpha.updateCounter(request, StreamObservers.map(response, AgonesCounter::fromAgones));
+    this.alpha.updateCounter(request, Internal.observerMap(response, Internal::toCounter));
   }
 
   @Override
   public void setCounterCapacity(final String name, final long amount, final StreamObserver<AgonesCounter> response) {
-    final Alpha.CounterUpdateRequest update = Alpha.CounterUpdateRequest.newBuilder()
+    final Alpha.CounterUpdateRequest update = Alpha.CounterUpdateRequest
+      .newBuilder()
       .setName(name)
       .setCapacity(Int64Value.newBuilder().setValue(amount).build())
       .build();
-    final Alpha.UpdateCounterRequest request = Alpha.UpdateCounterRequest.newBuilder()
+    final Alpha.UpdateCounterRequest request = Alpha.UpdateCounterRequest
+      .newBuilder()
       .setCounterUpdateRequest(update)
       .build();
-    this.alpha.updateCounter(request, StreamObservers.map(response, AgonesCounter::fromAgones));
+    this.alpha.updateCounter(request, Internal.observerMap(response, Internal::toCounter));
   }
 
   @Override
@@ -291,13 +300,9 @@ final class AgonesImpl implements Agones {
   static final class Builder implements Agones.Builder {
 
     private final ManagedChannel channel;
-
     private final ExecutorService gameServerWatcherExecutor;
-
-    private final Duration healthCheckDelay;
-
     private final ScheduledExecutorService healthCheckExecutor;
-
+    private final Duration healthCheckDelay;
     private final Duration healthCheckPeriod;
 
     private Builder(

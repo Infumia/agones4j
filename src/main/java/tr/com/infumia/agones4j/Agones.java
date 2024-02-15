@@ -2,7 +2,6 @@ package tr.com.infumia.agones4j;
 
 import agones.dev.sdk.Sdk;
 import agones.dev.sdk.alpha.Alpha;
-import com.google.protobuf.FieldMask;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.stub.StreamObserver;
@@ -89,7 +88,7 @@ public interface Agones extends AutoCloseable {
    * @see #canHealthCheck()
    */
   default StreamObserver<Sdk.Empty> healthCheckStream() {
-    return this.healthCheckStream(StreamObservers.empty());
+    return this.healthCheckStream(Internal.observerEmpty());
   }
 
   /**
@@ -103,7 +102,7 @@ public interface Agones extends AutoCloseable {
    * Call to self Allocation the GameServer.
    */
   default void allocate() {
-    this.allocate(StreamObservers.empty());
+    this.allocate(Internal.observerEmpty());
   }
 
   /**
@@ -112,7 +111,7 @@ public interface Agones extends AutoCloseable {
    * @return A future that represents the result of the allocation operation.
    */
   default CompletableFuture<Sdk.Empty> allocateFuture() {
-    return StreamObservers.toFuture(this::allocate);
+    return Internal.observerToFuture(this::allocate);
   }
 
   /**
@@ -128,7 +127,7 @@ public interface Agones extends AutoCloseable {
    * @return A future that represents the current game server.
    */
   default CompletableFuture<Sdk.GameServer> getGameServerFuture() {
-    return StreamObservers.toFuture(this::getGameServer);
+    return Internal.observerToFuture(this::getGameServer);
   }
 
   /**
@@ -142,7 +141,7 @@ public interface Agones extends AutoCloseable {
    * Call when the {@link Sdk.GameServer} is ready.
    */
   default void ready() {
-    this.ready(StreamObservers.empty());
+    this.ready(Internal.observerEmpty());
   }
 
   /**
@@ -151,7 +150,7 @@ public interface Agones extends AutoCloseable {
    * @return A future that represents the result of the ready operation.
    */
   default CompletableFuture<Sdk.Empty> readyFuture() {
-    return StreamObservers.toFuture(this::ready);
+    return Internal.observerToFuture(this::ready);
   }
 
   /**
@@ -168,7 +167,7 @@ public interface Agones extends AutoCloseable {
    * @param duration the duration to mark.
    */
   default void reserve(final Duration duration) {
-    this.reserve(duration, StreamObservers.empty());
+    this.reserve(duration, Internal.observerEmpty());
   }
 
   /**
@@ -179,7 +178,7 @@ public interface Agones extends AutoCloseable {
    * @return A future that represents the result of the reserve operation.
    */
   default CompletableFuture<Sdk.Empty> reserveFuture(final Duration duration) {
-    return StreamObservers.toFuture(response -> this.reserve(duration, response));
+    return Internal.observerToFuture(response -> this.reserve(duration, response));
   }
 
   /**
@@ -193,7 +192,7 @@ public interface Agones extends AutoCloseable {
    * Call when the {@link Sdk.GameServer} is shutting down.
    */
   default void shutdown() {
-    this.shutdown(StreamObservers.empty());
+    this.shutdown(Internal.observerEmpty());
   }
 
   /**
@@ -202,7 +201,7 @@ public interface Agones extends AutoCloseable {
    * @return A future that represents the result of the shutdown operation.
    */
   default CompletableFuture<Sdk.Empty> shutdownFuture() {
-    return StreamObservers.toFuture(this::shutdown);
+    return Internal.observerToFuture(this::shutdown);
   }
 
   /**
@@ -221,7 +220,7 @@ public interface Agones extends AutoCloseable {
    * @param value the value to apply.
    */
   default void setAnnotation(final String key, final String value) {
-    this.setAnnotation(key, value, StreamObservers.empty());
+    this.setAnnotation(key, value, Internal.observerEmpty());
   }
 
   /**
@@ -233,7 +232,7 @@ public interface Agones extends AutoCloseable {
    * @return A future that represents the result of the set annotation operation.
    */
   default CompletableFuture<Sdk.Empty> setAnnotationFuture(final String key, final String value) {
-    return StreamObservers.toFuture(response -> this.setAnnotation(key, value, response));
+    return Internal.observerToFuture(response -> this.setAnnotation(key, value, response));
   }
 
   /**
@@ -252,7 +251,7 @@ public interface Agones extends AutoCloseable {
    * @param value the value to apply.
    */
   default void setLabel(final String key, final String value) {
-    this.setLabel(key, value, StreamObservers.empty());
+    this.setLabel(key, value, Internal.observerEmpty());
   }
 
   /**
@@ -264,7 +263,7 @@ public interface Agones extends AutoCloseable {
    * @return A future that represents the result of the set label operation.
    */
   default CompletableFuture<Sdk.Empty> setLabelFuture(final String key, final String value) {
-    return StreamObservers.toFuture(response -> this.setLabel(key, value, response));
+    return Internal.observerToFuture(response -> this.setLabel(key, value, response));
   }
 
   /**
@@ -292,7 +291,7 @@ public interface Agones extends AutoCloseable {
    * @return A future that represents the list of the currently connected player ids.
    */
   default CompletableFuture<List<String>> getConnectedPlayersFuture() {
-    return StreamObservers.toFuture(this::getConnectedPlayersFuture);
+    return Internal.observerToFuture(this::getConnectedPlayersFuture);
   }
 
   /**
@@ -330,7 +329,7 @@ public interface Agones extends AutoCloseable {
    * @return A future that represents the result of the player connect operation.
    */
   default CompletableFuture<Boolean> playerConnectFuture(final String playerId) {
-    return StreamObservers.toFuture(response -> this.playerConnect(playerId, response));
+    return Internal.observerToFuture(response -> this.playerConnect(playerId, response));
   }
 
   /**
@@ -361,7 +360,7 @@ public interface Agones extends AutoCloseable {
    * @return A future that represents the result of the player disconnect operation.
    */
   default CompletableFuture<Boolean> playerDisconnectFuture(final String playerId) {
-    return StreamObservers.toFuture(response -> this.playerDisconnect(playerId, response));
+    return Internal.observerToFuture(response -> this.playerDisconnect(playerId, response));
   }
 
   /**
@@ -388,7 +387,7 @@ public interface Agones extends AutoCloseable {
    * @return A future that represents the result of the is player connected operation.
    */
   default CompletableFuture<Boolean> isPlayerConnected(final String playerId) {
-    return StreamObservers.toFuture(response -> this.isPlayerConnected(playerId, response));
+    return Internal.observerToFuture(response -> this.isPlayerConnected(playerId, response));
   }
 
   /**
@@ -407,7 +406,7 @@ public interface Agones extends AutoCloseable {
    * @return A future that represents the result of the set player capacity operation.
    */
   default CompletableFuture<Alpha.Empty> setPlayerCapacityFuture(final long capacity) {
-    return StreamObservers.toFuture(response -> this.setPlayerCapacity(capacity, response));
+    return Internal.observerToFuture(response -> this.setPlayerCapacity(capacity, response));
   }
 
   /**
@@ -431,7 +430,7 @@ public interface Agones extends AutoCloseable {
    * @return A future that represents the current player capacity.
    */
   default CompletableFuture<Long> getPlayerCapacityFuture() {
-    return StreamObservers.toFuture(this::getPlayerCapacity);
+    return Internal.observerToFuture(this::getPlayerCapacity);
   }
 
   /**
@@ -455,7 +454,7 @@ public interface Agones extends AutoCloseable {
    * @return A future that represents the current player count.
    */
   default CompletableFuture<Long> getPlayerCountFuture() {
-    return StreamObservers.toFuture(this::getPlayerCount);
+    return Internal.observerToFuture(this::getPlayerCount);
   }
 
   /**
@@ -478,7 +477,7 @@ public interface Agones extends AutoCloseable {
    * @return the list.
    */
   default CompletableFuture<AgonesList> getList(final String name) {
-    return StreamObservers.toFuture(response -> this.getList(name, response));
+    return Internal.observerToFuture(response -> this.getList(name, response));
   }
 
   /**
@@ -511,7 +510,7 @@ public interface Agones extends AutoCloseable {
    * @return the updated list.
    */
   default CompletableFuture<AgonesList> addListFuture(final String name, final String value) {
-    return StreamObservers.toFuture(response -> this.addList(name, value, response));
+    return Internal.observerToFuture(response -> this.addList(name, value, response));
   }
 
   /**
@@ -540,7 +539,7 @@ public interface Agones extends AutoCloseable {
    * @return the updated list.
    */
   default CompletableFuture<AgonesList> removeListFuture(final String name, final String value) {
-    return StreamObservers.toFuture(response -> this.removeList(name, value, response));
+    return Internal.observerToFuture(response -> this.removeList(name, value, response));
   }
 
   /**
@@ -579,7 +578,7 @@ public interface Agones extends AutoCloseable {
    * @return the updated list.
    */
   default CompletableFuture<AgonesList> updateList(final AgonesList list, final List<String> updateMask) {
-    return StreamObservers.toFuture(response -> this.updateList(list, updateMask, response));
+    return Internal.observerToFuture(response -> this.updateList(list, updateMask, response));
   }
 
   /**
@@ -602,7 +601,7 @@ public interface Agones extends AutoCloseable {
    * @return the counter.
    */
   default CompletableFuture<AgonesCounter> getCounterFuture(final String name) {
-    return StreamObservers.toFuture(response -> this.getCounter(name, response));
+    return Internal.observerToFuture(response -> this.getCounter(name, response));
   }
 
   /**
@@ -631,7 +630,7 @@ public interface Agones extends AutoCloseable {
    * @return the counter.
    */
   default CompletableFuture<AgonesCounter> increaseCounterFuture(final String name, final long amount) {
-    return StreamObservers.toFuture(response -> this.increaseCounter(name, amount, response));
+    return Internal.observerToFuture(response -> this.increaseCounter(name, amount, response));
   }
 
   /**
@@ -660,7 +659,7 @@ public interface Agones extends AutoCloseable {
    * @return the counter.
    */
   default CompletableFuture<AgonesCounter> decreaseCounter(final String name, final long amount) {
-    return StreamObservers.toFuture(response -> this.decreaseCounter(name, amount, response));
+    return Internal.observerToFuture(response -> this.decreaseCounter(name, amount, response));
   }
 
   /**
@@ -689,7 +688,7 @@ public interface Agones extends AutoCloseable {
    * @return the counter.
    */
   default CompletableFuture<AgonesCounter> setCounterCountFuture(String name, long amount) {
-    return StreamObservers.toFuture(response -> this.setCounterCount(name, amount, response));
+    return Internal.observerToFuture(response -> this.setCounterCount(name, amount, response));
   }
 
   /**
@@ -718,7 +717,7 @@ public interface Agones extends AutoCloseable {
    * @return the counter.
    */
   default CompletableFuture<AgonesCounter> setCounterCapacityFuture(final String name, final long amount) {
-    return StreamObservers.toFuture(response -> this.setCounterCapacity(name, amount, response));
+    return Internal.observerToFuture(response -> this.setCounterCapacity(name, amount, response));
   }
 
   /**
@@ -755,7 +754,7 @@ public interface Agones extends AutoCloseable {
      * @return The Agones Builder instance.
      */
     default Builder withAddress(final String host) {
-      return this.withAddress(host, Vars.GRPC_PORT);
+      return this.withAddress(host, Internal.GRPC_PORT);
     }
 
     /**
@@ -766,7 +765,7 @@ public interface Agones extends AutoCloseable {
      * @return The Agones Builder instance.
      */
     default Builder withAddress(final int port) {
-      return this.withAddress(Vars.GRPC_HOST, port);
+      return this.withAddress(Internal.GRPC_HOST, port);
     }
 
     /**
@@ -775,7 +774,7 @@ public interface Agones extends AutoCloseable {
      * @return The Agones Builder instance.
      */
     default Builder withAddress() {
-      return this.withAddress(Vars.GRPC_HOST);
+      return this.withAddress(Internal.GRPC_HOST);
     }
 
     /**
@@ -798,8 +797,8 @@ public interface Agones extends AutoCloseable {
      * @return The Agones Builder instance.
      */
     default Builder withTarget() {
-      Objects.requireNonNull(Vars.GRPC_ADDRESS, "Environment variable 'AGONES_SDK_GRPC_ADDRESS' is not set!");
-      return this.withTarget(Vars.GRPC_ADDRESS);
+      Objects.requireNonNull(Internal.GRPC_ADDRESS, "Environment variable 'AGONES_SDK_GRPC_ADDRESS' is not set!");
+      return this.withTarget(Internal.GRPC_ADDRESS);
     }
 
     /**
@@ -808,7 +807,7 @@ public interface Agones extends AutoCloseable {
      * @return The Agones Builder instance.
      */
     default Builder withChannel() {
-      if (Vars.GRPC_ADDRESS == null) {
+      if (Internal.GRPC_ADDRESS == null) {
         return this.withAddress();
       } else {
         return this.withTarget();
@@ -827,7 +826,7 @@ public interface Agones extends AutoCloseable {
     /**
      * Sets the executor for the game server watcher.
      *
-     * @param executor The executor service to be used by the game server watcher.
+     * @param executor The executor service to be used by the game server watcher. {@code null} to disable it. Disabled by default.
      *
      * @return The Agones Builder instance.
      */
@@ -836,24 +835,19 @@ public interface Agones extends AutoCloseable {
     /**
      * Sets the health check interval for the Agones Builder.
      *
-     * @param delay The delay duration for health checks.
+     * @param delay The delay duration for health checks. {@code null} to disable it. Disabled by default.
      * @param period The interval duration for health checks.
      *
      * @return The Agones Builder instance.
-     *
-     * @apiNote {@code null} to disable it.
-     * @apiNote It's disabled by default.
      */
     Builder withHealthCheck(Duration delay, Duration period);
 
     /**
      * Sets the health check executor for the builder.
      *
-     * @param executor the scheduled executor service to be used for health checks.
+     * @param executor the scheduled executor service to be used for health checks. {@code null} to disable it. Default is {@link Executors#newSingleThreadScheduledExecutor()}
      *
      * @return The Agones Builder instance.
-     *
-     * @apiNote Default is {@link Executors#newSingleThreadScheduledExecutor()}
      */
     Builder withHealthCheckExecutor(ScheduledExecutorService executor);
   }

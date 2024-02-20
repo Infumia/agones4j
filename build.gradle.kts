@@ -7,10 +7,6 @@ plugins {
   id("agones4j.base-conventions")
 }
 
-val signRequired = !rootProject.property("dev").toString().toBoolean()
-
-group = "tr.com.infumia"
-
 repositories {
   mavenCentral()
 }

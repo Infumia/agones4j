@@ -1,6 +1,5 @@
 # agones4j
-![Sonatype Nexus (Releases)](https://img.shields.io/nexus/r/tr.com.infumia/agones4j?label=maven-central&server=https%3A%2F%2Foss.sonatype.org%2F)
-![Sonatype Nexus (Snapshots)](https://img.shields.io/nexus/s/tr.com.infumia/agones4j?label=maven-central&server=https%3A%2F%2Foss.sonatype.org)
+[![](https://jitpack.io/v/infumia/agones4j.svg)](https://jitpack.io/#infumia/agones4j)
 ## How to Use (Developers)
 ### Code
 ```groovy

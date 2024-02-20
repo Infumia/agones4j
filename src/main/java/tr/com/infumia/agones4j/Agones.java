@@ -115,14 +115,14 @@ public interface Agones extends AutoCloseable {
   }
 
   /**
-   * Retrieves the current {@link Sdk.GameServer} data.
+   * Retrieves the current GameServer data.
    *
    * @param response the response from server.
    */
   void getGameServer(StreamObserver<Sdk.GameServer> response);
 
   /**
-   * Retrieves the current {@link Sdk.GameServer} data.
+   * Retrieves the current GameServer data.
    *
    * @return A future that represents the current game server.
    */
@@ -131,21 +131,21 @@ public interface Agones extends AutoCloseable {
   }
 
   /**
-   * Call when the {@link Sdk.GameServer} is ready.
+   * Call when the GameServer is ready.
    *
    * @param response the response from server.
    */
   void ready(StreamObserver<Sdk.Empty> response);
 
   /**
-   * Call when the {@link Sdk.GameServer} is ready.
+   * Call when the GameServer is ready.
    */
   default void ready() {
     this.ready(Internal.observerEmpty());
   }
 
   /**
-   * Call when the {@link Sdk.GameServer} is ready.
+   * Call when the @link Sdk.GameServer is ready.
    *
    * @return A future that represents the result of the ready operation.
    */
@@ -154,7 +154,7 @@ public interface Agones extends AutoCloseable {
   }
 
   /**
-   * Marks the {@link Sdk.GameServer} as the Reserved state for Duration.
+   * Marks the @link Sdk.GameServer as the Reserved state for Duration.
    *
    * @param duration the duration to mark.
    * @param response the response from server.
@@ -162,7 +162,7 @@ public interface Agones extends AutoCloseable {
   void reserve(Duration duration, StreamObserver<Sdk.Empty> response);
 
   /**
-   * Marks the {@link Sdk.GameServer} as the Reserved state for Duration.
+   * Marks the @link Sdk.GameServer as the Reserved state for Duration.
    *
    * @param duration the duration to mark.
    */
@@ -171,7 +171,7 @@ public interface Agones extends AutoCloseable {
   }
 
   /**
-   * Marks the {@link Sdk.GameServer} as the Reserved state for Duration.
+   * Marks the @link Sdk.GameServer as the Reserved state for Duration.
    *
    * @param duration the duration to mark.
    *
@@ -182,21 +182,21 @@ public interface Agones extends AutoCloseable {
   }
 
   /**
-   * Call when the {@link Sdk.GameServer} is shutting down.
+   * Call when the @link Sdk.GameServer is shutting down.
    *
    * @param response the response from server.
    */
   void shutdown(StreamObserver<Sdk.Empty> response);
 
   /**
-   * Call when the {@link Sdk.GameServer} is shutting down.
+   * Call when the @link Sdk.GameServer is shutting down.
    */
   default void shutdown() {
     this.shutdown(Internal.observerEmpty());
   }
 
   /**
-   * Call when the {@link Sdk.GameServer} is shutting down.
+   * Call when the @link Sdk.GameServer is shutting down.
    *
    * @return A future that represents the result of the shutdown operation.
    */
@@ -205,7 +205,7 @@ public interface Agones extends AutoCloseable {
   }
 
   /**
-   * Apply an Annotation to the backing {@link Sdk.GameServer} metadata.
+   * Apply an Annotation to the backing @link Sdk.GameServer metadata.
    *
    * @param key the key to apply.
    * @param value the value to apply.
@@ -214,7 +214,7 @@ public interface Agones extends AutoCloseable {
   void setAnnotation(String key, String value, StreamObserver<Sdk.Empty> observer);
 
   /**
-   * Apply an Annotation to the backing {@link Sdk.GameServer} metadata.
+   * Apply an Annotation to the backing @link Sdk.GameServer metadata.
    *
    * @param key the key to apply.
    * @param value the value to apply.
@@ -224,7 +224,7 @@ public interface Agones extends AutoCloseable {
   }
 
   /**
-   * Apply an Annotation to the backing {@link Sdk.GameServer} metadata.
+   * Apply an Annotation to the backing @link Sdk.GameServer metadata.
    *
    * @param key the key to apply.
    * @param value the value to apply.
@@ -236,7 +236,7 @@ public interface Agones extends AutoCloseable {
   }
 
   /**
-   * Apply a Label to the backing {@link Sdk.GameServer} metadata.
+   * Apply a Label to the backing @link Sdk.GameServer metadata.
    *
    * @param key the key to apply.
    * @param value the value to apply.
@@ -245,7 +245,7 @@ public interface Agones extends AutoCloseable {
   void setLabel(String key, String value, StreamObserver<Sdk.Empty> response);
 
   /**
-   * Apply a Label to the backing {@link Sdk.GameServer} metadata.
+   * Apply a Label to the backing @link Sdk.GameServer metadata.
    *
    * @param key the key to apply.
    * @param value the value to apply.
@@ -255,7 +255,7 @@ public interface Agones extends AutoCloseable {
   }
 
   /**
-   * Apply a Label to the backing {@link Sdk.GameServer} metadata.
+   * Apply a Label to the backing @link Sdk.GameServer metadata.
    *
    * @param key the key to apply.
    * @param value the value to apply.
@@ -270,9 +270,9 @@ public interface Agones extends AutoCloseable {
    * Returns the list of the currently connected player ids.
    * <p>
    * This is always accurate from what has been set through this SDK, even if the value has yet to be updated on the
-   * {@link Sdk.GameServer} status resource.
+   * @link Sdk.GameServer status resource.
    * <p>
-   * If {@link Sdk.GameServer.Status.PlayerStatus#getIdsList()} is set manually through the Kubernetes API, use
+   * If GameServer#Status#PlayerStatus#getIdsList is set manually through the Kubernetes API, use
    * {@link Agones#getGameServerFuture()} or {@link Agones#addGameServerWatcher(Consumer)} instead to view this value.
    *
    * @param response the response from server.
@@ -283,9 +283,9 @@ public interface Agones extends AutoCloseable {
    * Returns the list of the currently connected player ids.
    * <p>
    * This is always accurate from what has been set through this SDK, even if the value has yet to be updated on the
-   * {@link Sdk.GameServer} status resource.
+   * @link Sdk.GameServer status resource.
    * <p>
-   * If {@link Sdk.GameServer.Status.PlayerStatus#getIdsList()} is set manually through the Kubernetes API, use
+   * If GameServer#Status#PlayerStatus#getIdsList is set manually through the Kubernetes API, use
    * {@link Agones#getGameServerFuture()} or {@link Agones#addGameServerWatcher(Consumer)} instead to view this value.
    *
    * @return A future that represents the list of the currently connected player ids.
@@ -295,9 +295,9 @@ public interface Agones extends AutoCloseable {
   }
 
   /**
-   * Increases the SDK’s stored player count by one, and appends this playerID to {@link Sdk.GameServer.Status.PlayerStatus#getIdsList()}.
+   * Increases the SDK’s stored player count by one, and appends this playerID to GameServer#Status#PlayerStatus#getIdsList.
    * <p>
-   * {@link Sdk.GameServer.Status.PlayerStatus#getCount()} and {@link Sdk.GameServer.Status.PlayerStatus#getIdsList()} are then set to update the player count and id list a second from now, unless there is already an update pending, in which case the update joins that batch operation.
+   * GameServer#Status#PlayerStatus#getCount and GameServer#Status#PlayerStatus#getIdsList are then set to update the player count and id list a second from now, unless there is already an update pending, in which case the update joins that batch operation.
    * <p>
    * The response returns true and adds the playerID to the list of playerIDs if this playerID was not already in the list of connected playerIDs.
    * <p>
@@ -306,7 +306,7 @@ public interface Agones extends AutoCloseable {
    * An error will be returned if the playerID was not already in the list of connected playerIDs but the player capacity for the server has been reached.
    * The playerID will not be added to the list of playerIDs.
    * <p>
-   * WARNING: Do not use this method if you are manually managing {@link Sdk.GameServer.Status.PlayerStatus#getIdsList()} and {@link Sdk.GameServer.Status.PlayerStatus#getCount()} through the Kubernetes API, as indeterminate results will occur.
+   * WARNING: Do not use this method if you are manually managing GameServer#Status#PlayerStatus#getIdsList and GameServer#Status#PlayerStatus#getCount through the Kubernetes API, as indeterminate results will occur.
    *
    * @param playerId the player id to connect.
    * @param response the response from server.
@@ -314,15 +314,15 @@ public interface Agones extends AutoCloseable {
   void playerConnect(String playerId, StreamObserver<Boolean> response);
 
   /**
-   * Increases the SDK’s stored player count by one, and appends this playerID to {@link Sdk.GameServer.Status.PlayerStatus#getIdsList()}.
-   * {@link Sdk.GameServer.Status.PlayerStatus#getCount()} and {@link Sdk.GameServer.Status.PlayerStatus#getIdsList()} are then set to update the player count and id list a second from now, unless there is already an update pending, in which case the update joins that batch operation.
+   * Increases the SDK’s stored player count by one, and appends this playerID to GameServer#Status#PlayerStatus#getIdsList.
+   * GameServer#Status#PlayerStatus#getCount and GameServer#Status#PlayerStatus#getIdsList are then set to update the player count and id list a second from now, unless there is already an update pending, in which case the update joins that batch operation.
    * <p>
    * If the playerID exists within the list of connected playerIDs, will return false, and the list of connected playerIDs will be left unchanged.
    * <p>
    * An error will be returned if the playerID was not already in the list of connected playerIDs but the player capacity for the server has been reached.
    * The playerID will not be added to the list of playerIDs.
    * <p>
-   * WARNING: Do not use this method if you are manually managing {@link Sdk.GameServer.Status.PlayerStatus#getIdsList()} and {@link Sdk.GameServer.Status.PlayerStatus#getCount()} through the Kubernetes API, as indeterminate results will occur.
+   * WARNING: Do not use this method if you are manually managing GameServer#Status#PlayerStatus#getIdsList and GameServer#Status#PlayerStatus#getCount through the Kubernetes API, as indeterminate results will occur.
    *
    * @param playerId the player id to connect.
    *
@@ -333,14 +333,14 @@ public interface Agones extends AutoCloseable {
   }
 
   /**
-   * Decreases the SDK’s stored player count by one, and removes the playerID from {@link Sdk.GameServer.Status.PlayerStatus#getIdsList()}
-   * {@link Sdk.GameServer.Status.PlayerStatus#getCount()} and {@link Sdk.GameServer.Status.PlayerStatus#getIdsList()} are then set to update the player count and id list a second from now, unless there is already an update pending, in which case the update joins that batch operation.
+   * Decreases the SDK’s stored player count by one, and removes the playerID from GameServer#Status#PlayerStatus#getIdsList
+   * GameServer#Status#PlayerStatus#getCount and GameServer#Status#PlayerStatus#getIdsList are then set to update the player count and id list a second from now, unless there is already an update pending, in which case the update joins that batch operation.
    * <p>
    * The response returns true and removes the playerID from the list of connected playerIDs if the playerID value exists within the list.
    * <p>
    * If the playerID was not in the list of connected playerIDs, the call will return false, and the connected playerID list will be left unchanged.
    * <p>
-   * WARNING: Do not use this method if you are manually managing {@link Sdk.GameServer.Status.PlayerStatus#getIdsList()} and {@link Sdk.GameServer.Status.PlayerStatus#getCount()} through the Kubernetes API, as indeterminate results will occur.
+   * WARNING: Do not use this method if you are manually managing GameServer#Status#PlayerStatus#getIdsList and GameServer#Status#PlayerStatus#getCount through the Kubernetes API, as indeterminate results will occur.
    *
    * @param playerId the player id to disconnect.
    * @param response the response from server.
@@ -348,12 +348,12 @@ public interface Agones extends AutoCloseable {
   void playerDisconnect(String playerId, StreamObserver<Boolean> response);
 
   /**
-   * Decreases the SDK’s stored player count by one, and removes the playerID from {@link Sdk.GameServer.Status.PlayerStatus#getIdsList()}
-   * {@link Sdk.GameServer.Status.PlayerStatus#getCount()} and {@link Sdk.GameServer.Status.PlayerStatus#getIdsList()} are then set to update the player count and id list a second from now, unless there is already an update pending, in which case the update joins that batch operation.
+   * Decreases the SDK’s stored player count by one, and removes the playerID from GameServer#Status#PlayerStatus#getIdsList
+   * GameServer#Status#PlayerStatus#getCount and GameServer#Status#PlayerStatus#getIdsList are then set to update the player count and id list a second from now, unless there is already an update pending, in which case the update joins that batch operation.
    * <p>
    * If the playerID was not in the list of connected playerIDs, the call will return false, and the connected playerID list will be left unchanged.
    * <p>
-   * WARNING: Do not use this method if you are manually managing {@link Sdk.GameServer.Status.PlayerStatus#getIdsList()} and {@link Sdk.GameServer.Status.PlayerStatus#getCount()} through the Kubernetes API, as indeterminate results will occur.
+   * WARNING: Do not use this method if you are manually managing GameServer#Status#PlayerStatus#getIdsList and GameServer#Status#PlayerStatus#getCount through the Kubernetes API, as indeterminate results will occur.
    *
    * @param playerId the player id to disconnect.
    *
@@ -364,11 +364,11 @@ public interface Agones extends AutoCloseable {
   }
 
   /**
-   * Returns if the playerID is currently connected to the {@link Sdk.GameServer}.
+   * Returns if the playerID is currently connected to the @link Sdk.GameServer.
    * <p>
-   * This is always accurate from what has been set through this SDK, even if the value has yet to be updated on the {@link Sdk.GameServer} status resource.
+   * This is always accurate from what has been set through this SDK, even if the value has yet to be updated on the @link Sdk.GameServer status resource.
    * <p>
-   * If {@link Sdk.GameServer.Status.PlayerStatus#getIdsList()} is set manually through the Kubernetes API, use {@link Agones#getGameServerFuture()} or {@link Agones#addGameServerWatcher(Consumer)} instead to determine connected status.
+   * If GameServer#Status#PlayerStatus#getIdsList is set manually through the Kubernetes API, use {@link Agones#getGameServerFuture()} or {@link Agones#addGameServerWatcher(Consumer)} instead to determine connected status.
    *
    * @param playerId the player id to return.
    * @param response the response from server.
@@ -376,11 +376,11 @@ public interface Agones extends AutoCloseable {
   void isPlayerConnected(String playerId, StreamObserver<Boolean> response);
 
   /**
-   * Returns if the playerID is currently connected to the {@link Sdk.GameServer}.
+   * Returns if the playerID is currently connected to the @link Sdk.GameServer.
    * <p>
-   * This is always accurate from what has been set through this SDK, even if the value has yet to be updated on the {@link Sdk.GameServer} status resource.
+   * This is always accurate from what has been set through this SDK, even if the value has yet to be updated on the @link Sdk.GameServer status resource.
    * <p>
-   * If {@link Sdk.GameServer.Status.PlayerStatus#getIdsList()} is set manually through the Kubernetes API, use {@link Agones#getGameServerFuture()} or {@link Agones#addGameServerWatcher(Consumer)} instead to determine connected status.
+   * If GameServer#Status#PlayerStatus#getIdsList is set manually through the Kubernetes API, use {@link Agones#getGameServerFuture()} or {@link Agones#addGameServerWatcher(Consumer)} instead to determine connected status.
    *
    * @param playerId the player id to return.
    *
@@ -391,7 +391,7 @@ public interface Agones extends AutoCloseable {
   }
 
   /**
-   * Update the {@link Sdk.GameServer.Status.PlayerStatus#getCapacity()} value with a new capacity.
+   * Update the GameServer#Status#PlayerStatus#getCapacity value with a new capacity.
    *
    * @param capacity the capacity to update.
    * @param response the response from server.
@@ -399,7 +399,7 @@ public interface Agones extends AutoCloseable {
   void setPlayerCapacity(long capacity, StreamObserver<Alpha.Empty> response);
 
   /**
-   * Update the {@link Sdk.GameServer.Status.PlayerStatus#getCapacity()} value with a new capacity.
+   * Update the GameServer#Status#PlayerStatus#getCapacity value with a new capacity.
    *
    * @param capacity the capacity to update.
    *
@@ -412,9 +412,9 @@ public interface Agones extends AutoCloseable {
   /**
    * Retrieves the current player capacity.
    * <p>
-   * This is always accurate from what has been set through this SDK, even if the value has yet to be updated on the {@link Sdk.GameServer} status resource.
+   * This is always accurate from what has been set through this SDK, even if the value has yet to be updated on the @link Sdk.GameServer status resource.
    * <p>
-   * If {@link Sdk.GameServer.Status.PlayerStatus#getCapacity()} is set manually through the Kubernetes API, use {@link Agones#getGameServerFuture()} or {@link Agones#addGameServerWatcher(Consumer)} instead to view this value.
+   * If GameServer#Status#PlayerStatus#getCapacity is set manually through the Kubernetes API, use {@link Agones#getGameServerFuture()} or {@link Agones#addGameServerWatcher(Consumer)} instead to view this value.
    *
    * @param response the response from server.
    */
@@ -423,9 +423,9 @@ public interface Agones extends AutoCloseable {
   /**
    * Retrieves the current player capacity.
    * <p>
-   * This is always accurate from what has been set through this SDK, even if the value has yet to be updated on the {@link Sdk.GameServer} status resource.
+   * This is always accurate from what has been set through this SDK, even if the value has yet to be updated on the @link Sdk.GameServer status resource.
    * <p>
-   * If {@link Sdk.GameServer.Status.PlayerStatus#getCapacity()} is set manually through the Kubernetes API, use {@link Agones#getGameServerFuture()} or {@link Agones#addGameServerWatcher(Consumer)} instead to view this value.
+   * If GameServer#Status#PlayerStatus#getCapacity is set manually through the Kubernetes API, use {@link Agones#getGameServerFuture()} or {@link Agones#addGameServerWatcher(Consumer)} instead to view this value.
    *
    * @return A future that represents the current player capacity.
    */
@@ -436,9 +436,9 @@ public interface Agones extends AutoCloseable {
   /**
    * Retrieves the current player count.
    * <p>
-   * This is always accurate from what has been set through this SDK, even if the value has yet to be updated on the {@link Sdk.GameServer} status resource.
+   * This is always accurate from what has been set through this SDK, even if the value has yet to be updated on the @link Sdk.GameServer status resource.
    * <p>
-   * If {@link Sdk.GameServer.Status.PlayerStatus#getCount()} is set manually through the Kubernetes API, use {@link Agones#getGameServerFuture()} or {@link Agones#addGameServerWatcher(Consumer)} instead to view this value.
+   * If GameServer#Status#PlayerStatus#getCount is set manually through the Kubernetes API, use {@link Agones#getGameServerFuture()} or {@link Agones#addGameServerWatcher(Consumer)} instead to view this value.
    *
    * @param response the response from server.
    */
@@ -447,9 +447,9 @@ public interface Agones extends AutoCloseable {
   /**
    * Retrieves the current player count.
    * <p>
-   * This is always accurate from what has been set through this SDK, even if the value has yet to be updated on the {@link Sdk.GameServer} status resource.
+   * This is always accurate from what has been set through this SDK, even if the value has yet to be updated on the @link Sdk.GameServer status resource.
    * <p>
-   * If {@link Sdk.GameServer.Status.PlayerStatus#getCount()} is set manually through the Kubernetes API, use {@link Agones#getGameServerFuture()} or {@link Agones#addGameServerWatcher(Consumer)} instead to view this value.
+   * If GameServer#Status#PlayerStatus#getCount is set manually through the Kubernetes API, use {@link Agones#getGameServerFuture()} or {@link Agones#addGameServerWatcher(Consumer)} instead to view this value.
    *
    * @return A future that represents the current player count.
    */

@@ -1,10 +1,10 @@
 import com.google.protobuf.gradle.id
+import java.net.URI
 
 plugins {
   java
   `java-library`
   alias(libs.plugins.protobuf)
-  id("agones4j.base-conventions")
 }
 
 repositories {

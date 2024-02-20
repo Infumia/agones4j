@@ -10,9 +10,5 @@ grpc-stub = { module = "io.grpc:grpc-stub", version.ref = "grpc" }
 grpc-protobuf = { module = "io.grpc:grpc-protobuf", version.ref = "grpc" }
 annotationsapi = { module = "org.apache.tomcat:annotations-api", version = "6.0.53" }
 
-build-indra = { module = "net.kyori:indra-common", version.ref = "indra" }
-build-indra-sonatype = { module = "net.kyori:indra-publishing-sonatype", version.ref = "indra" }
-
 [plugins]
 protobuf = { id = "com.google.protobuf", version = "0.9.4" }
-nexus = { id = "io.github.gradle-nexus.publish-plugin", version = "2.0.0-rc-1" }

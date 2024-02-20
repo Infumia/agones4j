@@ -4,6 +4,10 @@
 ## How to Use (Developers)
 ### Code
 ```groovy
+repositories {
+  maven("https://jitpack.io/")
+}
+
 dependencies {
   implementation "io.grpc:grpc-stub:1.47.0"
   implementation "io.grpc:grpc-protobuf:1.47.0"

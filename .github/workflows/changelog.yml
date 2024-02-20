@@ -10,8 +10,6 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ !contains(github.event.head_commit.message, 'skip-snapshot') }}
     steps:
-      - uses: actions/checkout@v4
-
       - uses: release-drafter/release-drafter@master
         id: release
         env:

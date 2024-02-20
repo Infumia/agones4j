@@ -1,5 +1,4 @@
 import com.google.protobuf.gradle.id
-import java.net.URI
 
 plugins {
   java

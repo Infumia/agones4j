@@ -16,9 +16,7 @@ dependencies {
 }
 ```
 ```java
-import java.time.Duration;
-
-void agones() {
+  void agones() {
   final ExecutorService gameServerWatcherExecutor =
     Executors.newSingleThreadExecutor();
   final ScheduledExecutorService healthCheckExecutor =
@@ -50,7 +48,6 @@ void agones() {
     )
     .withHealthCheckerExecutor(healthCheckExecutor)
     .build();
-
   // Health checking.
   // Checks if the executor, delay and period are specified.
   if (agones.canHealthCheck()) {
@@ -58,15 +55,12 @@ void agones() {
     // Uses the health checker executor and the specified delay and period.
     agones.startHealthChecking();
   }
-    
   // Manual health checking.
   final StreamObserver<Empty> requester = agones.healthCheck();
   // onNext needs to be called continuously to keep the game server healthy.
   requester.onNext(Empty.getDefaultInstance());
-  
   // Stopping the health checking.
   agones.stopHealthChecking();
-
   // Game server watching.
   // Checks if the executor is specified.
   if (agones.canWatchGameServer()) {
@@ -74,7 +68,6 @@ void agones() {
       // This will be called when the game server is updated.
       System.out.println("Game server updated: " + gameServer));
   }
-
   agones.allocate();
   agones.shutdown();
 }

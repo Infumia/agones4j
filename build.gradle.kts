@@ -87,7 +87,6 @@ publishing {
       groupId = project.group.toString()
       artifactId = "agones4j"
       version = project.version.toString()
-
       from(components["java"])
       artifact(tasks["sourcesJar"])
       artifact(tasks["javadocJar"])

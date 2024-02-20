@@ -11,7 +11,6 @@ indra {
   github("infumia", "agones4j")
   mitLicense()
 
-  signWithKeyFromPrefixedProperties("infumia")
   configurePublications {
     pom {
       developers {

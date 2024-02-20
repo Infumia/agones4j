@@ -3,6 +3,7 @@ import com.google.protobuf.gradle.id
 plugins {
   java
   `java-library`
+  `maven-publish`
   alias(libs.plugins.protobuf)
 }
 
@@ -77,5 +78,42 @@ tasks {
 
   processResources {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+  }
+}
+
+publishing {
+  publications {
+    create<MavenPublication>("mavenJava") {
+      groupId = project.group.toString()
+      artifactId = "agones4j"
+      version = project.version.toString()
+
+      from(components["java"])
+      artifact(tasks["sourcesJar"])
+      artifact(tasks["javadocJar"])
+      pom {
+        name.set("Agones4J")
+        description.set("Java wrapper for Agones client SDK.")
+        url.set("https://infumia.com.tr/")
+        licenses {
+          license {
+            name.set("MIT License")
+            url.set("https://mit-license.org/license.txt")
+          }
+        }
+        developers {
+          developer {
+            id.set("portlek")
+            name.set("Hasan Demirtaş")
+            email.set("utsukushihito@outlook.com")
+          }
+        }
+        scm {
+          connection.set("scm:git:git://github.com/infumia/agones4j.git")
+          developerConnection.set("scm:git:ssh://github.com/infumia/agones4j.git")
+          url.set("https://github.com/infumia/agones4j")
+        }
+      }
+    }
   }
 }

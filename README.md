@@ -16,37 +16,37 @@ dependencies {
 ```
 ```java
   void agones() {
-  final ExecutorService gameServerWatcherExecutor =
-    Executors.newSingleThreadExecutor();
-  final ScheduledExecutorService healthCheckExecutor =
-    Executors.newSingleThreadScheduledExecutor();
-  final Agones agones = Agones.builder()
-    // Address specification.
-    // If not specified, localhost:9357 will be used.
-    // All the following methods are creating a ManagedChannel with 'usePlaintext'
-    // If you need to use SSL, you can use 'withChannel(ManagedChannel)' method.
-    .withAddress("localhost", 9357)
-    .withAddress("localhost") // 9357 
-    .withAddress(9357) // localhost
-    .withAddress() // localhost 9357
-    .withTarget("localhost:9357")
-    .withTarget() // localhost:9357
-    .withChannel(ManagedChannelBuilder
-      .forAddress("localhost", 9357)
-      .usePlaintext()
-      .build())
-    .withChannel() // localhost:9357
-    // Game server watcher executor specification.
-    .withGameServerWatcherExecutor(gameServerWatcherExecutor)
-    // Health checker executor specification.
-    // Check you game server's health check threshold and
-    // set the executor's delay and period accordingly.
-    .withHealthCheck(
-      /* delay */Duration.ofSeconds(1L),
-      /* period */Duration.ofSeconds(2L)
-    )
-    .withHealthCheckerExecutor(healthCheckExecutor)
-    .build();
+    final ExecutorService gameServerWatcherExecutor =
+      Executors.newSingleThreadExecutor();
+    final ScheduledExecutorService healthCheckExecutor =
+      Executors.newSingleThreadScheduledExecutor();
+    final Agones agones = Agones.builder()
+      // Address specification.
+      // If not specified, localhost:9357 will be used.
+      // All the following methods are creating a ManagedChannel with 'usePlaintext'
+      // If you need to use SSL, you can use 'withChannel(ManagedChannel)' method.
+      .withAddress("localhost", 9357)
+      .withAddress("localhost") // 9357 
+      .withAddress(9357) // localhost
+      .withAddress() // localhost 9357
+      .withTarget("localhost:9357")
+      .withTarget() // localhost:9357
+      .withChannel(ManagedChannelBuilder
+        .forAddress("localhost", 9357)
+        .usePlaintext()
+        .build())
+      .withChannel() // localhost:9357
+      // Game server watcher executor specification.
+      .withGameServerWatcherExecutor(gameServerWatcherExecutor)
+      // Health checker executor specification.
+      // Check you game server's health check threshold and
+      // set the executor's delay and period accordingly.
+      .withHealthCheck(
+        /* delay */Duration.ofSeconds(1L),
+        /* period */Duration.ofSeconds(2L)
+      )
+      .withHealthCheckerExecutor(healthCheckExecutor)
+      .build();
   // Health checking.
   // Checks if the executor, delay and period are specified.
   if (agones.canHealthCheck()) {

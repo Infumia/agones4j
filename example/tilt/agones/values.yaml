@@ -1,4 +1,9 @@
+gameservers:
+  namespaces:
+    - example
 agones:
+  image:
+    tag: 1.40.0
     generateTLS: false
     tlsCert: |
       -----BEGIN CERTIFICATE-----
@@ -51,8 +56,3 @@ agones:
       LAzcqP+kdHu0mqYwh0TlcZPz34dVkVTtc1m6FkyWDVD5r6QuC5qARHt1EaVny7xT
       ZEi5AuqxCOurvTLAgUizTLYz/rUes3/rDkKMSVYf0KbJX7pN6uU=
       -----END RSA PRIVATE KEY-----
-    image:
-      tag: 1.40.0
-gameservers:
-  namespaces:
-    - example

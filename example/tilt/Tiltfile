@@ -1,2 +1,0 @@
-include('agones/Tiltfile')
-include('example/Tiltfile')

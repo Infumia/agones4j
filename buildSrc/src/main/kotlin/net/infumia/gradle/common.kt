@@ -34,6 +34,7 @@ fun Project.applyCommon(javaVersion: Int = 8, sources: Boolean = true, javadoc: 
                 dependsOn("classes")
                 archiveClassifier.set("sources")
                 from(sourceSets["main"].allSource)
+                duplicatesStrategy = DuplicatesStrategy.EXCLUDE
             }
     }
 

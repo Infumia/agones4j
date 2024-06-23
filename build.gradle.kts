@@ -1,4 +1,4 @@
-import net.infumia.gradle.applyProtobuf
+import net.infumia.gradle.protobuf
 import net.infumia.gradle.publish
 import net.infumia.gradle.spotless
 
@@ -6,7 +6,7 @@ plugins { java }
 
 publish()
 
-applyProtobuf()
+protobuf()
 
 spotless()
 

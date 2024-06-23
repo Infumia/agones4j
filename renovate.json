@@ -1,18 +1,10 @@
 {
-  "extends": [
-    "config:base"
-  ],
-  "labels": ["dependencies"],
-  "schedule": [
-    "after 9am"
-  ],
-  "packageRules": [
-    {
-      "matchUpdateTypes": ["major", "minor", "patch", "pin", "digest", "lockFileMaintenance", "rollback", "bump"],
-      "automerge": true
-    }
-  ],
-  "ignorePaths": [
-    "example"
-  ]
+  "extends": [ "config:base" ],
+  "labels": [ "dependencies" ],
+  "schedule": [ "after 9am" ],
+  "packageRules": [ {
+    "matchUpdateTypes": [ "major", "minor", "patch", "pin", "digest", "lockFileMaintenance", "rollback", "bump" ],
+    "automerge": true
+  } ],
+  "ignorePaths": [ "example" ]
 }

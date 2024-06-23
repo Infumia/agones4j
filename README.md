@@ -13,7 +13,8 @@ dependencies {
     // Required, https://mvnrepository.com/artifact/io.grpc/grpc-stub/
     implementation "io.grpc:grpc-stub:1.64.0"
     implementation "io.grpc:grpc-protobuf:1.64.0"
-    implementation "io.grpc:grpc-netty:1.64.0"
+    // Required, https://github.com/grpc/grpc-java/blob/master/gradle/libs.versions.toml#L46/
+    implementation "org.apache.tomcat:annotations-api:1.64.0"
 }
 ```
 ```java

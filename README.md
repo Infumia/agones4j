@@ -1,18 +1,20 @@
 # agones4j
-[![](https://jitpack.io/v/infumia/agones4j.svg)](https://jitpack.io/#infumia/agones4j)
+[![Maven Central Version](https://img.shields.io/maven-central/v/net.infumia/agones4j)](https://central.sonatype.com/artifact/net.infumia/agones4j/)
 ## How to Use (Developers)
 ### Code
 ```groovy
 repositories {
-  maven("https://jitpack.io/")
+  mavenCentral()
 }
 
 dependencies {
-  // https://mvnrepository.com/artifact/io.grpc/grpc-stub/latest
-  implementation "io.grpc:grpc-stub:1.47.0"
-  implementation "io.grpc:grpc-protobuf:1.47.0"
-  implementation "io.grpc:grpc-netty:1.47.0"
-  implementation "com.github.infumia:agones4j:VERSION"
+    // Base module
+    implementation "net.infumia:agones4j:VERSION"
+    // Required, https://mvnrepository.com/artifact/io.grpc/grpc-stub/
+    implementation "io.grpc:grpc-stub:1.64.0"
+    implementation "io.grpc:grpc-protobuf:1.64.0"
+    // Required, https://github.com/grpc/grpc-java/blob/master/gradle/libs.versions.toml#L46/
+    implementation "org.apache.tomcat:annotations-api:1.64.0"
 }
 ```
 ```java

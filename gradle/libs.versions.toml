@@ -9,5 +9,6 @@ grpc-stub = { module = "io.grpc:grpc-stub", version.ref = "grpc" }
 grpc-protobuf = { module = "io.grpc:grpc-protobuf", version.ref = "grpc" }
 annotationsapi = { module = "org.apache.tomcat:annotations-api", version = "6.0.53" }
 
-[plugins]
-protobuf = { id = "com.google.protobuf", version = "0.9.4" }
+nexus-plugin = { module = "com.vanniktech:gradle-maven-publish-plugin", version = "0.29.0" }
+spotless-plugin = { module = "com.diffplug.spotless:spotless-plugin-gradle", version = "6.25.0" }
+protobuf-plugin = { module = "com.google.protobuf:protobuf-gradle-plugin", version = "0.9.4" }

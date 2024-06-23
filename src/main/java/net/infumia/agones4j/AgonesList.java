@@ -1,4 +1,4 @@
-package tr.com.infumia.agones4j;
+package net.infumia.agones4j;
 
 import java.util.Collections;
 import java.util.List;

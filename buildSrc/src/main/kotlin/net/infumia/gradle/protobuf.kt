@@ -9,7 +9,6 @@ import org.gradle.api.plugins.JavaPluginExtension
 import org.gradle.api.tasks.javadoc.Javadoc
 import org.gradle.kotlin.dsl.*
 
-
 fun Project.applyProtobuf() {
     val libs = project.rootProject.the<LibrariesForLibs>()
 
@@ -17,13 +16,9 @@ fun Project.applyProtobuf() {
 
     extensions.getByType<JavaPluginExtension>().sourceSets {
         named("main") {
-            java {
-                srcDirs("build/generated/source/proto/main/java")
-            }
+            java { srcDirs("build/generated/source/proto/main/java") }
 
-            resources {
-                srcDir("src/main/proto")
-            }
+            resources { srcDir("src/main/proto") }
         }
     }
 
@@ -31,20 +26,10 @@ fun Project.applyProtobuf() {
         protoc { artifact = libs.protoc.get().toString() }
 
         plugins {
-            id("grpc") {
-                artifact = "io.grpc:protoc-gen-grpc-java:${libs.versions.grpc.get()}"
-            }
+            id("grpc") { artifact = "io.grpc:protoc-gen-grpc-java:${libs.versions.grpc.get()}" }
         }
 
-        generateProtoTasks {
-            all().forEach {
-                it.plugins {
-                    id("grpc") {
-                        outputSubDir = "java"
-                    }
-                }
-            }
-        }
+        generateProtoTasks { all().forEach { it.plugins { id("grpc") { outputSubDir = "java" } } } }
     }
 
     tasks {

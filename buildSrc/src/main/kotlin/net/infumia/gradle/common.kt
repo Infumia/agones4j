@@ -37,10 +37,5 @@ fun Project.applyCommon(javaVersion: Int = 8, sources: Boolean = true, javadoc: 
             }
     }
 
-
-    tasks {
-        withType<ProcessResources> {
-            duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-        }
-    }
+    tasks { withType<ProcessResources> { duplicatesStrategy = DuplicatesStrategy.EXCLUDE } }
 }

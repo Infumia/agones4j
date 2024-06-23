@@ -1,16 +1,16 @@
-name: Update Changelog
-
-on:
+---
+name: "Update Changelog"
+"on":
   push:
-    branches: [ master ]
-
+    branches:
+    - "master"
 jobs:
   changelog:
-    name: Update Changelog
-    runs-on: ubuntu-latest
-    if: ${{ !contains(github.event.head_commit.message, 'skip-snapshot') }}
+    name: "Update Changelog"
+    runs-on: "ubuntu-latest"
+    if: "${{ !contains(github.event.head_commit.message, 'skip-snapshot') }}"
     steps:
-      - uses: release-drafter/release-drafter@master
-        id: release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - uses: "release-drafter/release-drafter@master"
+      id: "release"
+      env:
+        GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"

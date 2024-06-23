@@ -1,7 +1,6 @@
 package tr.com.infumia.agones4j;
 
 import agones.dev.sdk.Sdk;
-import agones.dev.sdk.alpha.Alpha;
 import agones.dev.sdk.beta.Beta;
 import io.grpc.stub.StreamObserver;
 import java.util.List;
@@ -33,7 +32,6 @@ final class Internal {
     static final String GRPC_ADDRESS = Internal.getEnv(Internal.ENV_GRPC_ADDRESS, null);
 
     private static final StreamObserver<Sdk.Empty> EMPTY = new Adapter<>();
-    private static final StreamObserver<Alpha.Empty> EMPTY_ALPHA = new Adapter<>();
 
     private Internal() {
         throw new UnsupportedOperationException(
@@ -87,10 +85,6 @@ final class Internal {
 
     static StreamObserver<Sdk.Empty> observerEmpty() {
         return Internal.EMPTY;
-    }
-
-    static StreamObserver<Alpha.Empty> observerEmptyAlpha() {
-        return Internal.EMPTY_ALPHA;
     }
 
     static <T> CompletableFuture<T> observerToFuture(final Consumer<StreamObserver<T>> response) {

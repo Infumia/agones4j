@@ -198,10 +198,7 @@ final class AgonesImpl implements Agones {
 
     @Override
     public void setPlayerCapacity(final long capacity, final StreamObserver<Alpha.Empty> response) {
-        this.alpha.setPlayerCapacity(
-                Alpha.Count.newBuilder().setCount(capacity).build(),
-                Internal.observerEmptyAlpha()
-            );
+        this.alpha.setPlayerCapacity(Alpha.Count.newBuilder().setCount(capacity).build(), response);
     }
 
     @Override

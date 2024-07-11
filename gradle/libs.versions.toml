@@ -1,5 +1,5 @@
 [versions]
-grpc = "1.65.0"
+grpc = "1.65.1"
 protobuf = "4.27.2"
 
 [libraries]

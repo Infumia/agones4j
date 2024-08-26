@@ -5,7 +5,7 @@ import com.diffplug.gradle.spotless.SpotlessPlugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.*
 
-fun Project.spotless() {
+fun Project.applySpotless() {
     repositories.mavenCentral()
 
     apply<SpotlessPlugin>()

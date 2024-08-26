@@ -3,20 +3,29 @@ package net.infumia.gradle
 import com.vanniktech.maven.publish.MavenPublishBaseExtension
 import com.vanniktech.maven.publish.MavenPublishPlugin
 import com.vanniktech.maven.publish.SonatypeHost
+import com.vanniktech.maven.publish.tasks.JavadocJar
 import org.gradle.api.Project
+import org.gradle.api.file.DuplicatesStrategy
+import org.gradle.api.plugins.JavaPluginExtension
+import org.gradle.api.tasks.bundling.Jar
 import org.gradle.kotlin.dsl.*
 
-fun Project.publish(
-    moduleName: String? = null,
-    javaVersion: Int = 8,
-    sources: Boolean = true,
-    javadoc: Boolean = true
-) {
-    applyCommon(javaVersion, sources, javadoc)
+fun Project.applyPublish(moduleName: String? = null, javaVersion: Int = 8) {
+    applyJava(javaVersion)
     apply<MavenPublishPlugin>()
 
     val projectName = "agones4j${if (moduleName == null) "" else "-$moduleName"}"
     val signRequired = project.hasProperty("sign-required")
+
+    val sourceSets = extensions.getByType<JavaPluginExtension>().sourceSets
+    tasks.register("sourcesJar", Jar::class) {
+        dependsOn("classes")
+        archiveClassifier = "sources"
+        from(sourceSets["main"].allSource)
+        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    }
+
+    tasks.withType<JavadocJar> { afterEvaluate { archiveBaseName = name } }
 
     extensions.configure<MavenPublishBaseExtension> {
         coordinates(project.group.toString(), projectName, project.version.toString())
@@ -26,26 +35,26 @@ fun Project.publish(
         }
 
         pom {
-            name.set("Agones4J")
-            description.set("Java wrapper for Agones client SDK.")
-            url.set("https://infumia.com.tr/")
+            name = "Agones4J"
+            description = "Java wrapper for Agones client SDK."
+            url = "https://infumia.com.tr/"
             licenses {
                 license {
-                    name.set("MIT License")
-                    url.set("https://mit-license.org/license.txt")
+                    name = "MIT License"
+                    url = "https://mit-license.org/license.txt"
                 }
             }
             developers {
                 developer {
-                    id.set("portlek")
-                    name.set("Hasan Demirtaş")
-                    email.set("utsukushihito@outlook.com")
+                    id = "portlek"
+                    name = "Hasan Demirtaş"
+                    email = "utsukushihito@outlook.com"
                 }
             }
             scm {
-                connection.set("scm:git:git://github.com/infumia/agones4j.git")
-                developerConnection.set("scm:git:ssh://github.com/infumia/agones4j.git")
-                url.set("https://github.com/infumia/agones4j")
+                connection = "scm:git:git://github.com/infumia/agones4j.git"
+                developerConnection = "scm:git:ssh://github.com/infumia/agones4j.git"
+                url = "https://github.com/infumia/agones4j"
             }
         }
     }

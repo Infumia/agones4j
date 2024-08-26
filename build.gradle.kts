@@ -1,14 +1,14 @@
-import net.infumia.gradle.protobuf
-import net.infumia.gradle.publish
-import net.infumia.gradle.spotless
+import net.infumia.gradle.applyProtobuf
+import net.infumia.gradle.applyPublish
+import net.infumia.gradle.applySpotless
 
 plugins { java }
 
-publish()
+applyPublish()
 
-protobuf()
+applyProtobuf()
 
-spotless()
+applySpotless()
 
 dependencies {
     compileOnly(libs.protobuf)

@@ -9,7 +9,7 @@ import org.gradle.api.plugins.JavaPluginExtension
 import org.gradle.api.tasks.javadoc.Javadoc
 import org.gradle.kotlin.dsl.*
 
-fun Project.protobuf() {
+fun Project.applyProtobuf() {
     val libs = project.rootProject.the<LibrariesForLibs>()
 
     apply<ProtobufPlugin>()

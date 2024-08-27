@@ -1,6 +1,6 @@
 [versions]
 grpc = "1.66.0"
-protobuf = "4.27.3"
+protobuf = "4.27.4"
 
 [libraries]
 protobuf = { module = "com.google.protobuf:protobuf-java", version.ref = "protobuf" }

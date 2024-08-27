@@ -14,18 +14,14 @@ jobs:
       with:
         distribution: "adopt"
         java-version: "11"
-    - uses: "actions/cache@v4"
+    - uses: "actions/cache@master"
       with:
-        path: "~/.gradle/caches"
-        key: "${{ runner.os }}-gradle-cache-${{ hashFiles('**/*.gradle.kts') }}"
+        path: |
+          ~/.gradle/caches
+          ~/.gradle/wrapper
+        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
         restore-keys: |
           ${{ runner.os }}-gradle-
-    - uses: "actions/cache@v4"
-      with:
-        path: "~/.gradle/wrapper"
-        key: "${{ runner.os }}-gradle-wrapper-${{ hashFiles('**/gradle-wrapper.properties') }}"
-        restore-keys: |
-          ${{ runner.os }}-gradlew-
     - run: |
         [[ "${{ github.event.release.tag_name }}" =~ ^[0-9]+(\.[0-9]+)*$ ]] || exit -1
         chmod +x gradlew

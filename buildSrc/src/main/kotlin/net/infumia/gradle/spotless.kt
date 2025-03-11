@@ -60,7 +60,7 @@ fun Project.applySpotless() {
                 it.setMaxWidth(100)
                 it.setBlockIndent(4)
                 it.setContinuationIndent(4)
-                it.setRemoveUnusedImport(true)
+                it.setRemoveUnusedImports(true)
             }
         }
 

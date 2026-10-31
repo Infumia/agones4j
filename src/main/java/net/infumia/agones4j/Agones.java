@@ -270,7 +270,7 @@ public interface Agones extends AutoCloseable {
      * Returns the list of the currently connected player ids.
      * <p>
      * This is always accurate from what has been set through this SDK, even if the value has yet to be updated on the
-     * @link Sdk.GameServer status resource.
+     * {@link Sdk.GameServer} status resource.
      * <p>
      * If GameServer#Status#PlayerStatus#getIdsList is set manually through the Kubernetes API, use
      * {@link Agones#getGameServerFuture()} or {@link Agones#addGameServerWatcher(Consumer)} instead to view this value.
@@ -283,7 +283,7 @@ public interface Agones extends AutoCloseable {
      * Returns the list of the currently connected player ids.
      * <p>
      * This is always accurate from what has been set through this SDK, even if the value has yet to be updated on the
-     * @link Sdk.GameServer status resource.
+     * {@link Sdk.GameServer} status resource.
      * <p>
      * If GameServer#Status#PlayerStatus#getIdsList is set manually through the Kubernetes API, use
      * {@link Agones#getGameServerFuture()} or {@link Agones#addGameServerWatcher(Consumer)} instead to view this value.

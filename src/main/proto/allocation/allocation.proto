@@ -1,4 +1,4 @@
-// Copyright 2020 Google LLC All Rights Reserved.
+// Copyright Contributors to Agones a Series of LF Projects, LLC.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -90,12 +90,12 @@ message AllocationRequest {
   //
   // For `Distributed` strategy sorting, the entire selection of `GameServers` will be sorted by this priority list to provide the
   // order that `GameServers` will be allocated by.
-	repeated Priority priorities = 9;
+  repeated Priority priorities = 9;
 
   // [Stage: Beta]
   // [FeatureFlag:CountsAndLists]
   // Counters and Lists provide a set of actions to perform
-	// on Counters and Lists during allocation.
+  // on Counters and Lists during allocation.
   map<string, CounterAction> counters = 10;
   map<string, ListAction> lists = 11;
 }
@@ -161,6 +161,24 @@ message MetaPatch {
   map<string, string> annotations = 2;
 }
 
+// LabelMatchExpressions is a selector that contains values, a key, and an operator
+// that relates the key and values. The requirements are ANDed.
+message LabelMatchExpressions {
+  // key is the label key that the selector applies to.
+  string key = 1;
+  // operator represents a key's relationship to a set of values.
+  // In and NotIn require a non-empty values array; Exists and DoesNotExist require an empty one.
+  enum Operator {
+    In = 0;
+    NotIn = 1;
+    Exists = 2;
+    DoesNotExist = 3;
+  }
+  Operator operator = 2;
+  // values is an array of string values.
+  repeated string values = 3;
+}
+
 // LabelSelector used for finding a GameServer with matching labels.
 message LabelSelector {
   // Labels to match.
@@ -176,25 +194,22 @@ message GameServerSelector {
     ALLOCATED = 1;
   };
   GameServerState gameServerState = 2;
-  PlayerSelector players = 3;
+  // Reserved for removed players field.
+  reserved 3;
   map<string, CounterSelector> counters = 4;
   map<string, ListSelector> lists = 5;
-}
-
-// PlayerSelector is filter for player capacity values.
-// minAvailable should always be less or equal to maxAvailable.
-message PlayerSelector {
-  uint64 minAvailable = 1;
-  uint64 maxAvailable = 2;
+  // matchExpressions is a list of label selector requirements. The requirements are ANDed
+  // with matchLabels.
+  repeated LabelMatchExpressions matchExpressions = 6;
 }
 
 // CounterSelector is the filter options for a GameServer based on the count and/or available capacity.
 // 0 for MaxCount or MaxAvailable means unlimited maximum. Default for all fields: 0
 message CounterSelector {
-	int64 minCount = 1;
-	int64 maxCount = 2;
-	int64 minAvailable = 3;
-	int64 maxAvailable = 4;
+  int64 minCount = 1;
+  int64 maxCount = 2;
+  int64 minAvailable = 3;
+  int64 maxAvailable = 4;
 }
 
 // ListSelector is the filter options for a GameServer based on List available capacity and/or the
@@ -202,9 +217,9 @@ message CounterSelector {
 // 0 for MaxAvailable means unlimited maximum. Default for integer fields: 0
 // "" for ContainsValue means ignore field. Default for string field: ""
 message ListSelector {
-	string containsValue = 1;
-	int64 minAvailable = 2;
-	int64 maxAvailable = 3;
+  string containsValue = 1;
+  int64 minAvailable = 2;
+  int64 maxAvailable = 3;
 }
 
 // Priority is a sorting option for GameServers with Counters or Lists based on the Capacity.
@@ -232,14 +247,16 @@ message Priority {
 // Capacity: Update the maximum capacity of the Counter to this number (optional). Min 0, Max int64.
 message CounterAction {
   google.protobuf.StringValue action = 1;
-	google.protobuf.Int64Value amount = 2;
-	google.protobuf.Int64Value capacity = 3;
+  google.protobuf.Int64Value amount = 2;
+  google.protobuf.Int64Value capacity = 3;
 }
 
 // ListAction is an optional action that can be performed on a List at allocation.
 // AddValues: Append values to a List's Values array (optional). Any duplicate values will be ignored.
 // Capacity: Update the maximum capacity of the Counter to this number (optional). Min 0, Max 1000.
+// DeleteValues: Remove values from a List's Values array (optional). Any nonexistant values will be ignored.
 message ListAction {
-	repeated string addValues = 1;
-	google.protobuf.Int64Value capacity = 2;
+  repeated string addValues = 1;
+  google.protobuf.Int64Value capacity = 2;
+  repeated string deleteValues = 3;
 }

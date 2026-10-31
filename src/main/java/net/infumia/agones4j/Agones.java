@@ -726,8 +726,8 @@ public interface Agones extends AutoCloseable {
         final String name,
         final long amount
     ) {
-        return Internal.observerToFuture(
-            response -> this.setCounterCapacity(name, amount, response)
+        return Internal.observerToFuture(response ->
+            this.setCounterCapacity(name, amount, response)
         );
     }
 
@@ -755,8 +755,8 @@ public interface Agones extends AutoCloseable {
          */
         default Builder withAddress(final String host, final int port) {
             return this.withChannel(
-                    ManagedChannelBuilder.forAddress(host, port).usePlaintext().build()
-                );
+                ManagedChannelBuilder.forAddress(host, port).usePlaintext().build()
+            );
         }
 
         /**

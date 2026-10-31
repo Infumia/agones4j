@@ -2,7 +2,6 @@ package net.infumia.gradle
 
 import com.vanniktech.maven.publish.MavenPublishBaseExtension
 import com.vanniktech.maven.publish.MavenPublishPlugin
-import com.vanniktech.maven.publish.SonatypeHost
 import com.vanniktech.maven.publish.tasks.JavadocJar
 import org.gradle.api.Project
 import org.gradle.api.file.DuplicatesStrategy
@@ -29,7 +28,7 @@ fun Project.applyPublish(moduleName: String? = null, javaVersion: Int = 8) {
 
     extensions.configure<MavenPublishBaseExtension> {
         coordinates(project.group.toString(), projectName, project.version.toString())
-        publishToMavenCentral(SonatypeHost.CENTRAL_PORTAL, true)
+        publishToMavenCentral(automaticRelease = true)
         if (signRequired) {
             signAllPublications()
         }

@@ -11,8 +11,8 @@ dependencies {
     // Base module
     implementation "net.infumia:agones4j:VERSION"
     // Required, https://mvnrepository.com/artifact/io.grpc/grpc-stub/
-    implementation "io.grpc:grpc-stub:1.64.0"
-    implementation "io.grpc:grpc-protobuf:1.64.0"
+    implementation "io.grpc:grpc-stub:1.85.1"
+    implementation "io.grpc:grpc-protobuf:1.85.1"
     // Required, https://github.com/grpc/grpc-java/blob/master/gradle/libs.versions.toml#L46/
     implementation "org.apache.tomcat:annotations-api:6.0.53"
 }

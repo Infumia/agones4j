@@ -6,17 +6,20 @@ import agones.dev.sdk.beta.Beta;
 import com.google.protobuf.FieldMask;
 import com.google.protobuf.Int64Value;
 import io.grpc.ManagedChannel;
+import io.grpc.Status;
+import io.grpc.stub.ClientCallStreamObserver;
+import io.grpc.stub.ClientResponseObserver;
 import io.grpc.stub.StreamObserver;
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 
 final class AgonesImpl implements Agones {
@@ -28,12 +31,18 @@ final class AgonesImpl implements Agones {
     private final agones.dev.sdk.alpha.SDKGrpc.SDKStub alpha;
 
     private final ExecutorService gameServerWatcherExecutor;
-    private List<Consumer<Sdk.GameServer>> gameServerWatchers;
+    private final List<Consumer<Sdk.GameServer>> gameServerWatchers = new CopyOnWriteArrayList<>();
+    private final Object gameServerWatchLock = new Object();
+    private GameServerWatch gameServerWatch;
 
     private final Duration healthCheckDelay;
     private final ScheduledExecutorService healthCheckExecutor;
     private final Duration healthCheckPeriod;
+    private final Object healthCheckLock = new Object();
     private ScheduledFuture<?> healthCheckTask;
+    private final AtomicReference<HealthCheck> healthCheck = new AtomicReference<>();
+
+    private volatile boolean closed;
 
     private AgonesImpl(final Builder builder) {
         this.channel = builder.channel;
@@ -57,15 +66,22 @@ final class AgonesImpl implements Agones {
             this.gameServerWatcherExecutor,
             "Game server watcher is not enabled!"
         );
-        if (this.gameServerWatchers == null) {
-            this.gameServerWatchers = Collections.synchronizedList(new ArrayList<>());
-            final StreamObserver<Sdk.GameServer> response = Internal.observerOnNext(
-                this.gameServerWatcherExecutor,
-                this.gameServerWatchers
-            );
-            this.sdk.watchGameServer(Sdk.Empty.getDefaultInstance(), response);
-        }
         this.gameServerWatchers.add(watcher);
+        synchronized (this.gameServerWatchLock) {
+            if (this.gameServerWatch == null) {
+                this.watchGameServer();
+            }
+        }
+    }
+
+    private void watchGameServer() {
+        if (this.closed) {
+            return;
+        }
+        this.gameServerWatch = new GameServerWatch();
+        this.sdk
+            .withWaitForReady()
+            .watchGameServer(Sdk.Empty.getDefaultInstance(), this.gameServerWatch);
     }
 
     @Override
@@ -86,27 +102,43 @@ final class AgonesImpl implements Agones {
         ) {
             throw new IllegalStateException("Health check is not enabled!");
         }
-        if (this.healthCheckTask != null) {
-            this.healthCheckTask.cancel(true);
-        }
-        final StreamObserver<Sdk.Empty> request = this.healthCheckStream(Internal.observerEmpty());
-        this.healthCheckTask = this.healthCheckExecutor.scheduleAtFixedRate(
-                () -> {
-                    if (this.healthCheckTask != null && !this.healthCheckTask.isDone()) {
-                        request.onNext(Sdk.Empty.getDefaultInstance());
-                    }
-                },
+        synchronized (this.healthCheckLock) {
+            this.stopHealthChecking();
+            this.healthCheckTask = this.healthCheckExecutor.scheduleAtFixedRate(
+                this::sendHealthPing,
                 this.healthCheckDelay.toMillis(),
                 this.healthCheckPeriod.toMillis(),
                 TimeUnit.MILLISECONDS
             );
+        }
     }
 
     @Override
     public void stopHealthChecking() {
-        if (this.healthCheckTask != null) {
-            this.healthCheckTask.cancel(true);
-            this.healthCheckTask = null;
+        synchronized (this.healthCheckLock) {
+            if (this.healthCheckTask != null) {
+                this.healthCheckTask.cancel(false);
+                this.healthCheckTask = null;
+            }
+            final HealthCheck healthCheck = this.healthCheck.getAndSet(null);
+            if (healthCheck != null) {
+                healthCheck.close();
+            }
+        }
+    }
+
+    private void sendHealthPing() {
+        synchronized (this.healthCheckLock) {
+            if (this.healthCheckTask == null) {
+                return;
+            }
+            HealthCheck healthCheck = this.healthCheck.get();
+            if (healthCheck == null) {
+                healthCheck = new HealthCheck();
+                this.healthCheck.set(healthCheck);
+                this.healthCheckStream(healthCheck);
+            }
+            healthCheck.ping();
         }
     }
 
@@ -133,9 +165,9 @@ final class AgonesImpl implements Agones {
     @Override
     public void reserve(final Duration duration, final StreamObserver<Sdk.Empty> response) {
         this.sdk.reserve(
-                Sdk.Duration.newBuilder().setSeconds(duration.getSeconds()).build(),
-                response
-            );
+            Sdk.Duration.newBuilder().setSeconds(duration.getSeconds()).build(),
+            response
+        );
     }
 
     @Override
@@ -150,9 +182,9 @@ final class AgonesImpl implements Agones {
         final StreamObserver<Sdk.Empty> observer
     ) {
         this.sdk.setAnnotation(
-                Sdk.KeyValue.newBuilder().setKey(key).setValue(value).build(),
-                observer
-            );
+            Sdk.KeyValue.newBuilder().setKey(key).setValue(value).build(),
+            observer
+        );
     }
 
     @Override
@@ -167,33 +199,33 @@ final class AgonesImpl implements Agones {
     @Override
     public void getConnectedPlayersFuture(final StreamObserver<List<String>> response) {
         this.alpha.getConnectedPlayers(
-                Alpha.Empty.getDefaultInstance(),
-                Internal.observerMap(response, Alpha.PlayerIDList::getListList)
-            );
+            Alpha.Empty.getDefaultInstance(),
+            Internal.observerMap(response, Alpha.PlayerIDList::getListList)
+        );
     }
 
     @Override
     public void playerConnect(final String playerId, final StreamObserver<Boolean> response) {
         this.alpha.playerConnect(
-                Alpha.PlayerID.newBuilder().setPlayerID(playerId).build(),
-                Internal.observerMap(response, Alpha.Bool::getBool)
-            );
+            Alpha.PlayerID.newBuilder().setPlayerID(playerId).build(),
+            Internal.observerMap(response, Alpha.Bool::getBool)
+        );
     }
 
     @Override
     public void playerDisconnect(final String playerId, final StreamObserver<Boolean> response) {
         this.alpha.playerDisconnect(
-                Alpha.PlayerID.newBuilder().setPlayerID(playerId).build(),
-                Internal.observerMap(response, Alpha.Bool::getBool)
-            );
+            Alpha.PlayerID.newBuilder().setPlayerID(playerId).build(),
+            Internal.observerMap(response, Alpha.Bool::getBool)
+        );
     }
 
     @Override
     public void isPlayerConnected(final String playerId, final StreamObserver<Boolean> response) {
         this.alpha.isPlayerConnected(
-                Alpha.PlayerID.newBuilder().setPlayerID(playerId).build(),
-                Internal.observerMap(response, Alpha.Bool::getBool)
-            );
+            Alpha.PlayerID.newBuilder().setPlayerID(playerId).build(),
+            Internal.observerMap(response, Alpha.Bool::getBool)
+        );
     }
 
     @Override
@@ -204,17 +236,17 @@ final class AgonesImpl implements Agones {
     @Override
     public void getPlayerCapacity(final StreamObserver<Long> response) {
         this.alpha.getPlayerCapacity(
-                Alpha.Empty.getDefaultInstance(),
-                Internal.observerMap(response, Alpha.Count::getCount)
-            );
+            Alpha.Empty.getDefaultInstance(),
+            Internal.observerMap(response, Alpha.Count::getCount)
+        );
     }
 
     @Override
     public void getPlayerCount(final StreamObserver<Long> response) {
         this.alpha.getPlayerCount(
-                Alpha.Empty.getDefaultInstance(),
-                Internal.observerMap(response, Alpha.Count::getCount)
-            );
+            Alpha.Empty.getDefaultInstance(),
+            Internal.observerMap(response, Alpha.Count::getCount)
+        );
     }
 
     @Override
@@ -337,7 +369,98 @@ final class AgonesImpl implements Agones {
 
     @Override
     public void close() throws Exception {
+        this.closed = true;
+        this.stopHealthChecking();
+        synchronized (this.gameServerWatchLock) {
+            if (this.gameServerWatch != null) {
+                this.gameServerWatch.cancel();
+                this.gameServerWatch = null;
+            }
+        }
         this.channel.shutdown().awaitTermination(5L, TimeUnit.SECONDS);
+    }
+
+    private final class GameServerWatch
+        implements ClientResponseObserver<Sdk.Empty, Sdk.GameServer>
+    {
+
+        private final StreamObserver<Sdk.GameServer> dispatcher = Internal.observerOnNext(
+            AgonesImpl.this.gameServerWatcherExecutor,
+            AgonesImpl.this.gameServerWatchers
+        );
+        private ClientCallStreamObserver<Sdk.Empty> call;
+
+        @Override
+        public void beforeStart(final ClientCallStreamObserver<Sdk.Empty> call) {
+            this.call = call;
+        }
+
+        @Override
+        public void onNext(final Sdk.GameServer value) {
+            this.dispatcher.onNext(value);
+        }
+
+        @Override
+        public void onError(final Throwable t) {
+            this.ended(Status.fromThrowable(t).getCode() == Status.Code.UNAVAILABLE);
+        }
+
+        @Override
+        public void onCompleted() {
+            this.ended(false);
+        }
+
+        void cancel() {
+            this.call.cancel("Agones client closed", null);
+        }
+
+        private void ended(final boolean reconnect) {
+            synchronized (AgonesImpl.this.gameServerWatchLock) {
+                if (AgonesImpl.this.gameServerWatch != this) {
+                    return;
+                }
+                AgonesImpl.this.gameServerWatch = null;
+                if (reconnect) {
+                    AgonesImpl.this.watchGameServer();
+                }
+            }
+        }
+    }
+
+    private final class HealthCheck implements ClientResponseObserver<Sdk.Empty, Sdk.Empty> {
+
+        private ClientCallStreamObserver<Sdk.Empty> call;
+
+        @Override
+        public void beforeStart(final ClientCallStreamObserver<Sdk.Empty> call) {
+            this.call = call;
+        }
+
+        @Override
+        public void onNext(final Sdk.Empty value) {}
+
+        @Override
+        public void onError(final Throwable t) {
+            AgonesImpl.this.healthCheck.compareAndSet(this, null);
+        }
+
+        @Override
+        public void onCompleted() {
+            AgonesImpl.this.healthCheck.compareAndSet(this, null);
+        }
+
+        void ping() {
+            if (this.call != null) {
+                this.call.onNext(Sdk.Empty.getDefaultInstance());
+            }
+        }
+
+        void close() {
+            if (this.call != null) {
+                this.call.onCompleted();
+                this.call = null;
+            }
+        }
     }
 
     static final class Builder implements Agones.Builder {

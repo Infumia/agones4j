@@ -12,7 +12,7 @@ jobs:
     - uses: "actions/checkout@master"
     - uses: "actions/setup-java@master"
       with:
-        distribution: "adopt"
+        distribution: "temurin"
         java-version: "17"
     - uses: "actions/cache@master"
       with:

@@ -18,18 +18,22 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
-/**
- * An in-memory Agones SDK server that records every request and replies with configurable values.
- */
 final class FakeAgonesServer implements AutoCloseable {
 
     private final BlockingQueue<Message> requests = new LinkedBlockingQueue<>();
     private final String name = InProcessServerBuilder.generateName();
     private final Server server;
 
+    private final List<StreamObserver<Sdk.Empty>> healthStreams = new CopyOnWriteArrayList<>();
+    private final List<StreamObserver<Sdk.GameServer>> watchStreams = new CopyOnWriteArrayList<>();
+
     final Semaphore healthPings = new Semaphore(0);
+    final AtomicInteger healthStreamsOpened = new AtomicInteger();
+    final AtomicInteger healthStreamsCompleted = new AtomicInteger();
     final List<Sdk.GameServer> watchUpdates = new CopyOnWriteArrayList<>();
+    final AtomicInteger watchCalls = new AtomicInteger();
 
     volatile Status failure;
     volatile Sdk.GameServer gameServer = Sdk.GameServer.getDefaultInstance();
@@ -43,9 +47,6 @@ final class FakeAgonesServer implements AutoCloseable {
         this.server = this.start(InProcessServerBuilder.forName(this.name).directExecutor());
     }
 
-    /**
-     * Starts the fake server on the given builder, e.g. a real TCP server.
-     */
     FakeAgonesServer(final ServerBuilder<?> builder) throws IOException {
         this.server = this.start(builder);
     }
@@ -77,6 +78,22 @@ final class FakeAgonesServer implements AutoCloseable {
             throw new AssertionError("No request received, expected " + type.getSimpleName());
         }
         return type.cast(request);
+    }
+
+    void failHealthStreams(final Status status) {
+        for (final StreamObserver<Sdk.Empty> stream : this.healthStreams) {
+            if (this.healthStreams.remove(stream)) {
+                stream.onError(status.asRuntimeException());
+            }
+        }
+    }
+
+    void failWatchStreams(final Status status) {
+        for (final StreamObserver<Sdk.GameServer> stream : this.watchStreams) {
+            if (this.watchStreams.remove(stream)) {
+                stream.onError(status.asRuntimeException());
+            }
+        }
     }
 
     @Override
@@ -114,6 +131,8 @@ final class FakeAgonesServer implements AutoCloseable {
 
         @Override
         public StreamObserver<Sdk.Empty> health(final StreamObserver<Sdk.Empty> response) {
+            FakeAgonesServer.this.healthStreamsOpened.incrementAndGet();
+            FakeAgonesServer.this.healthStreams.add(response);
             return new StreamObserver<Sdk.Empty>() {
                 @Override
                 public void onNext(final Sdk.Empty value) {
@@ -121,12 +140,17 @@ final class FakeAgonesServer implements AutoCloseable {
                 }
 
                 @Override
-                public void onError(final Throwable t) {}
+                public void onError(final Throwable t) {
+                    FakeAgonesServer.this.healthStreams.remove(response);
+                }
 
                 @Override
                 public void onCompleted() {
-                    response.onNext(Sdk.Empty.getDefaultInstance());
-                    response.onCompleted();
+                    if (FakeAgonesServer.this.healthStreams.remove(response)) {
+                        FakeAgonesServer.this.healthStreamsCompleted.incrementAndGet();
+                        response.onNext(Sdk.Empty.getDefaultInstance());
+                        response.onCompleted();
+                    }
                 }
             };
         }
@@ -145,6 +169,8 @@ final class FakeAgonesServer implements AutoCloseable {
             final StreamObserver<Sdk.GameServer> response
         ) {
             FakeAgonesServer.this.requests.add(request);
+            FakeAgonesServer.this.watchCalls.incrementAndGet();
+            FakeAgonesServer.this.watchStreams.add(response);
             FakeAgonesServer.this.watchUpdates.forEach(response::onNext);
         }
 

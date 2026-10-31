@@ -46,8 +46,6 @@ final class AgonesImplTest {
     @AfterEach
     void tearDown() throws Exception {
         this.agones.stopHealthChecking();
-        // Closing the server first cancels open health and watch streams,
-        // otherwise channel shutdown waits for them until its timeout.
         this.server.close();
         this.agones.close();
         this.watcherExecutor.shutdownNow();

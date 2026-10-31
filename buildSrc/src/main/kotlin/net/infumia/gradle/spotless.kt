@@ -16,9 +16,9 @@ fun Project.applySpotless() {
 
         val prettierConfig =
             mapOf(
-                "prettier" to "3.3.2",
-                "prettier-plugin-java" to "2.6.0",
-                "prettier-plugin-toml" to "2.0.1",
+                "prettier" to "3.9.10",
+                "prettier-plugin-java" to "2.11.0",
+                "prettier-plugin-toml" to "4.1.0",
             )
 
         yaml {
@@ -32,7 +32,7 @@ fun Project.applySpotless() {
             target("renovate.json")
             endWithNewline()
             trimTrailingWhitespace()
-            jackson()
+            gson().indentWithSpaces(2)
         }
 
         format("toml") {
@@ -67,6 +67,7 @@ fun Project.applySpotless() {
         java {
             target(
                 "src/main/java/**/*.java",
+                "src/test/java/**/*.java",
             )
             importOrder()
             removeUnusedImports()

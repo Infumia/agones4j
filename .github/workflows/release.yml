@@ -13,13 +13,13 @@ jobs:
     - uses: "actions/setup-java@master"
       with:
         distribution: "adopt"
-        java-version: "11"
+        java-version: "17"
     - uses: "actions/cache@master"
       with:
         path: |
           ~/.gradle/caches
           ~/.gradle/wrapper
-        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+        key: "${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}"
         restore-keys: |
           ${{ runner.os }}-gradle-
     - run: |

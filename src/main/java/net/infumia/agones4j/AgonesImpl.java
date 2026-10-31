@@ -91,15 +91,15 @@ final class AgonesImpl implements Agones {
         }
         final StreamObserver<Sdk.Empty> request = this.healthCheckStream(Internal.observerEmpty());
         this.healthCheckTask = this.healthCheckExecutor.scheduleAtFixedRate(
-                () -> {
-                    if (this.healthCheckTask != null && !this.healthCheckTask.isDone()) {
-                        request.onNext(Sdk.Empty.getDefaultInstance());
-                    }
-                },
-                this.healthCheckDelay.toMillis(),
-                this.healthCheckPeriod.toMillis(),
-                TimeUnit.MILLISECONDS
-            );
+            () -> {
+                if (this.healthCheckTask != null && !this.healthCheckTask.isDone()) {
+                    request.onNext(Sdk.Empty.getDefaultInstance());
+                }
+            },
+            this.healthCheckDelay.toMillis(),
+            this.healthCheckPeriod.toMillis(),
+            TimeUnit.MILLISECONDS
+        );
     }
 
     @Override
@@ -133,9 +133,9 @@ final class AgonesImpl implements Agones {
     @Override
     public void reserve(final Duration duration, final StreamObserver<Sdk.Empty> response) {
         this.sdk.reserve(
-                Sdk.Duration.newBuilder().setSeconds(duration.getSeconds()).build(),
-                response
-            );
+            Sdk.Duration.newBuilder().setSeconds(duration.getSeconds()).build(),
+            response
+        );
     }
 
     @Override
@@ -150,9 +150,9 @@ final class AgonesImpl implements Agones {
         final StreamObserver<Sdk.Empty> observer
     ) {
         this.sdk.setAnnotation(
-                Sdk.KeyValue.newBuilder().setKey(key).setValue(value).build(),
-                observer
-            );
+            Sdk.KeyValue.newBuilder().setKey(key).setValue(value).build(),
+            observer
+        );
     }
 
     @Override
@@ -167,33 +167,33 @@ final class AgonesImpl implements Agones {
     @Override
     public void getConnectedPlayersFuture(final StreamObserver<List<String>> response) {
         this.alpha.getConnectedPlayers(
-                Alpha.Empty.getDefaultInstance(),
-                Internal.observerMap(response, Alpha.PlayerIDList::getListList)
-            );
+            Alpha.Empty.getDefaultInstance(),
+            Internal.observerMap(response, Alpha.PlayerIDList::getListList)
+        );
     }
 
     @Override
     public void playerConnect(final String playerId, final StreamObserver<Boolean> response) {
         this.alpha.playerConnect(
-                Alpha.PlayerID.newBuilder().setPlayerID(playerId).build(),
-                Internal.observerMap(response, Alpha.Bool::getBool)
-            );
+            Alpha.PlayerID.newBuilder().setPlayerID(playerId).build(),
+            Internal.observerMap(response, Alpha.Bool::getBool)
+        );
     }
 
     @Override
     public void playerDisconnect(final String playerId, final StreamObserver<Boolean> response) {
         this.alpha.playerDisconnect(
-                Alpha.PlayerID.newBuilder().setPlayerID(playerId).build(),
-                Internal.observerMap(response, Alpha.Bool::getBool)
-            );
+            Alpha.PlayerID.newBuilder().setPlayerID(playerId).build(),
+            Internal.observerMap(response, Alpha.Bool::getBool)
+        );
     }
 
     @Override
     public void isPlayerConnected(final String playerId, final StreamObserver<Boolean> response) {
         this.alpha.isPlayerConnected(
-                Alpha.PlayerID.newBuilder().setPlayerID(playerId).build(),
-                Internal.observerMap(response, Alpha.Bool::getBool)
-            );
+            Alpha.PlayerID.newBuilder().setPlayerID(playerId).build(),
+            Internal.observerMap(response, Alpha.Bool::getBool)
+        );
     }
 
     @Override
@@ -204,17 +204,17 @@ final class AgonesImpl implements Agones {
     @Override
     public void getPlayerCapacity(final StreamObserver<Long> response) {
         this.alpha.getPlayerCapacity(
-                Alpha.Empty.getDefaultInstance(),
-                Internal.observerMap(response, Alpha.Count::getCount)
-            );
+            Alpha.Empty.getDefaultInstance(),
+            Internal.observerMap(response, Alpha.Count::getCount)
+        );
     }
 
     @Override
     public void getPlayerCount(final StreamObserver<Long> response) {
         this.alpha.getPlayerCount(
-                Alpha.Empty.getDefaultInstance(),
-                Internal.observerMap(response, Alpha.Count::getCount)
-            );
+            Alpha.Empty.getDefaultInstance(),
+            Internal.observerMap(response, Alpha.Count::getCount)
+        );
     }
 
     @Override

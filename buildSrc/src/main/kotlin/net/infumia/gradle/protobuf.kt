@@ -16,7 +16,7 @@ fun Project.applyProtobuf() {
 
     extensions.getByType<JavaPluginExtension>().sourceSets {
         named("main") {
-            java { srcDirs("build/generated/source/proto/main/java") }
+            java { srcDirs("build/generated/sources/proto/main/java") }
 
             resources { srcDir("src/main/proto") }
         }

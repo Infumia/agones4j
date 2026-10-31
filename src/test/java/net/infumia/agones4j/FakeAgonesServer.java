@@ -6,6 +6,7 @@ import agones.dev.sdk.beta.Beta;
 import com.google.protobuf.Message;
 import io.grpc.ManagedChannel;
 import io.grpc.Server;
+import io.grpc.ServerBuilder;
 import io.grpc.Status;
 import io.grpc.inprocess.InProcessChannelBuilder;
 import io.grpc.inprocess.InProcessServerBuilder;
@@ -39,8 +40,18 @@ final class FakeAgonesServer implements AutoCloseable {
     volatile long playerCount;
 
     FakeAgonesServer() throws IOException {
-        this.server = InProcessServerBuilder.forName(this.name)
-            .directExecutor()
+        this.server = this.start(InProcessServerBuilder.forName(this.name).directExecutor());
+    }
+
+    /**
+     * Starts the fake server on the given builder, e.g. a real TCP server.
+     */
+    FakeAgonesServer(final ServerBuilder<?> builder) throws IOException {
+        this.server = this.start(builder);
+    }
+
+    private Server start(final ServerBuilder<?> builder) throws IOException {
+        return builder
             .addService(new SdkService())
             .addService(new BetaService())
             .addService(new AlphaService())
@@ -50,6 +61,10 @@ final class FakeAgonesServer implements AutoCloseable {
 
     ManagedChannel newChannel() {
         return InProcessChannelBuilder.forName(this.name).directExecutor().build();
+    }
+
+    int port() {
+        return this.server.getPort();
     }
 
     Message pollRequest(final long timeout, final TimeUnit unit) throws InterruptedException {

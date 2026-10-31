@@ -20,6 +20,7 @@ dependencies {
     testImplementation(libs.grpc.protobuf)
     testImplementation(libs.grpc.stub)
     testImplementation(libs.grpc.inprocess)
+    testImplementation(libs.grpc.netty.shaded)
     testImplementation(libs.annotationsapi)
     testImplementation(platform(libs.junit.bom))
     testImplementation(libs.junit.jupiter)

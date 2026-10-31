@@ -8,6 +8,7 @@ import agones.dev.sdk.alpha.Alpha;
 import agones.dev.sdk.beta.Beta;
 import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
+import io.grpc.stub.StreamObserver;
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.concurrent.BlockingQueue;
@@ -324,6 +325,52 @@ final class AgonesImplTest {
         ) {
             assertThat(agones.canHealthCheck()).isTrue();
         }
+    }
+
+    @Test
+    void fireAndForgetOverloadsSendRequests() throws Exception {
+        this.agones.ready();
+        this.server.takeRequest(Sdk.Empty.class);
+        this.agones.allocate();
+        this.server.takeRequest(Sdk.Empty.class);
+        this.agones.shutdown();
+        this.server.takeRequest(Sdk.Empty.class);
+
+        this.agones.reserve(Duration.ofSeconds(30L));
+        assertThat(this.server.takeRequest(Sdk.Duration.class).getSeconds()).isEqualTo(30L);
+
+        this.agones.setLabel("mode", "ranked");
+        assertThat(this.server.takeRequest(Sdk.KeyValue.class).getKey()).isEqualTo("mode");
+
+        this.agones.setAnnotation("map", "dust2");
+        assertThat(this.server.takeRequest(Sdk.KeyValue.class).getKey()).isEqualTo("map");
+    }
+
+    @Test
+    void healthCheckStreamForwardsManualPings() throws Exception {
+        final StreamObserver<Sdk.Empty> stream = this.agones.healthCheckStream();
+
+        stream.onNext(Sdk.Empty.getDefaultInstance());
+        stream.onNext(Sdk.Empty.getDefaultInstance());
+
+        assertThat(this.server.healthPings.tryAcquire(2, 5L, TimeUnit.SECONDS)).isTrue();
+        stream.onCompleted();
+    }
+
+    @Test
+    void restartingHealthCheckingKeepsPinging() throws Exception {
+        this.agones.startHealthChecking();
+        assertThat(this.server.healthPings.tryAcquire(1, 5L, TimeUnit.SECONDS)).isTrue();
+
+        this.agones.startHealthChecking();
+        this.server.healthPings.drainPermits();
+
+        assertThat(this.server.healthPings.tryAcquire(3, 5L, TimeUnit.SECONDS)).isTrue();
+    }
+
+    @Test
+    void canWatchGameServerWhenExecutorIsSet() {
+        assertThat(this.agones.canWatchGameServer()).isTrue();
     }
 
     private Beta.CounterUpdateRequest takeCounterUpdate() throws InterruptedException {
